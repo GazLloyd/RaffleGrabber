@@ -86,7 +86,7 @@ public class ResourceReader {
 				{
 
 					//System.out.println("found none, breaking");
-					break jloop;
+					break;
 				}
 
 				else
@@ -103,7 +103,7 @@ public class ResourceReader {
 		if (nonefound)
 			throw new RaffleImageException("Could not read one or more resource values - make sure the image is uncovered!");
 
-		int returnInt=0;
+		int returnInt;
 
 		switch(ints.size())
 		{
@@ -132,8 +132,8 @@ public class ResourceReader {
 
 	public static String readName(BufferedImage img) throws RaffleImageException
 	{
-		Point left = ImageUtils.fuzzyIndexOf(img, nameLeft, 6);
-		Point right = ImageUtils.fuzzyIndexOf(img, nameRight, 6);
+		Point left = ImageUtils.indexOfName(img, nameLeft);
+		Point right = ImageUtils.indexOfName(img, nameRight);
 
 		if (left == null || right == null)
 			throw new RaffleImageException("Cannot read name - make sure the image is uncovered");
