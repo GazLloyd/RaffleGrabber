@@ -28,6 +28,7 @@ public class SuccessPopup extends JDialog {
 	 * Create the dialog.
 	 */
 	public SuccessPopup(RaffleImageFrame r) {
+        Main.logger.info("Creating raffle success popup...");
 		setTitle("Success!");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RaffleErrorPopup.class.getResource("/templates/success.png")));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -98,6 +99,7 @@ public class SuccessPopup extends JDialog {
 			putValue(SHORT_DESCRIPTION, "OK");
 		}
 		public void actionPerformed(ActionEvent e) {
+            Main.logger.info("OK button pressed");
 			rif.dispose();
 			SuccessPopup.this.dispose();
 		}

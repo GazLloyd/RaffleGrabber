@@ -23,6 +23,7 @@ public class Entrant {
 
 	public Entrant(BufferedImage img, String name, int timber, int stone, int ore, int pore, int coal, int bars, int pbars, int cloth, int rations, int minions)
 	{
+        Main.logger.info("Creating new entrant object from values...");
 		try
 		{
 			this.img = new RaffleImage(img);
@@ -30,7 +31,7 @@ public class Entrant {
 
 		catch (RaffleImageException e)
 		{
-			//print something
+            Main.logger.warning("The supplied image could not be converted to a raffle image");
 		}
 
 
@@ -53,6 +54,7 @@ public class Entrant {
 
 	public Entrant(BufferedImage img) throws RaffleImageException
 	{
+        Main.logger.info("Creating new entrant object from just image...");
 		this.img = new RaffleImage(img);
 
 		this.name = readName();
@@ -167,11 +169,13 @@ public class Entrant {
 	
 	public void saveImg() throws IOException
 	{
+        Main.logger.info("Saving image...");
 		ImageIO.write(img.croppedImg, "png", new File(Main.getPath(), "\\auto\\"+Calendar.getInstance().getTime().toString().replace(':','-')+ " - " + name + ".png"));
 	}
 	
 	public void amend(String name, HashMap<ResourceType, Integer> res)
 	{
+        Main.logger.info("Amending entrant...");
 		this.name = name;
 		this.resources = res;
 	}

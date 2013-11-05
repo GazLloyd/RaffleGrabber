@@ -16,35 +16,6 @@ public class ImageUtils
 	public static final Color white = new Color(255,255,255), black = new Color(0,0,0), blue = new Color(0,0,255);
 	public static final int whiteRGB = white.getRGB(), blackRGB = black.getRGB(), blueRGB = blue.getRGB();
 	
-	public static Point indexOf(BufferedImage haystack, BufferedImage needle)
-	{
-		int hw = haystack.getWidth();
-		int hh = haystack.getHeight();
-		int nw = needle.getWidth();
-		int nh = needle.getHeight();
-		for (int hy = 0; hy <= hh - nh; hy++)
-			for (int hx = 0; hx <= hw - nw; hx++)
-			{
-				boolean found = true;
-				label:
-				for (int ny = 0; ny < nh; ny++)
-				{
-					for (int nx = 0; nx < nw; nx++)
-					{
-						if (needle.getRGB(nx, ny) != haystack.getRGB(hx + nx, hy + ny))
-						{
-							found = false;
-							break label;
-						}
-					}
-				}
-				if (found) {
-					return new Point(hx, hy);
-				}
-			}
-		return null;
-	}
-	
 	public static Point indexOfIgnoreWhite(BufferedImage haystack, BufferedImage needle)
 	{
 		int hw = haystack.getWidth();

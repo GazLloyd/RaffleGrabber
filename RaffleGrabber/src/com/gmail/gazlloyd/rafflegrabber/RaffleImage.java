@@ -1,5 +1,7 @@
 package com.gmail.gazlloyd.rafflegrabber;
 
+import com.gmail.gazlloyd.rafflegrabber.gui.Main;
+
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -17,12 +19,14 @@ public class RaffleImage {
 	
 	public RaffleImage(BufferedImage img) throws RaffleImageException
 	{
+        Main.logger.info("Creating new raffle image");
 		this.rawImg = img;
 		process();
 	}
 	
 	public void process() throws RaffleImageException
 	{
+        Main.logger.info("Attempting to find raffle window...");
 		Point tr = ImageUtils.fuzzyIndexOf(rawImg, cornertr, 6);
 		Point br = ImageUtils.fuzzyIndexOf(rawImg, cornerbr, 6);
 		Point tl = ImageUtils.fuzzyIndexOf(rawImg, cornertl, 6);
@@ -30,11 +34,12 @@ public class RaffleImage {
 		
 		if (tr == null || br == null || tl == null || bl == null)
 		{
+            Main.logger.warning("Could not find corners of the raffle window");
 			throw new RaffleImageException("Could not find entire resource window\n\nPlease make sure it is completely visible and unobstructed");
 		}
 		else
 		{
-			//print("successfully found raffle window!")
+            Main.logger.info("Found raffle window");
 			croppedImg = rawImg.getSubimage(tl.x, tl.y, X, Y);
 		}
 		
@@ -43,6 +48,7 @@ public class RaffleImage {
 	
 	public static void initialise()
 	{
+        Main.logger.info("Initialising raffle image");
 		try
 		{
 			cornertr = ImageIO.read(RaffleImage.class.getClassLoader().getResourceAsStream("templates/cornertr.png"));
@@ -53,7 +59,7 @@ public class RaffleImage {
 		
 		catch (IOException e)
 		{
-			//print some message about failure to load here
+            Main.logger.severe("Failed to load corners of interface");
 		}
 	}
 	

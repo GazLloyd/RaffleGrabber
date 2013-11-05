@@ -57,6 +57,7 @@ public class RaffleImageFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public RaffleImageFrame(Entrant entrant) {
+        Main.logger.info("Creating raffle image frame");
 		setTitle("Entrant verification");
 		this.entrant = entrant;
 		this.img = entrant.getImg().croppedImg;
@@ -159,12 +160,15 @@ public class RaffleImageFrame extends JFrame {
 		fields.get(ResourceType.RATIONS).setBounds(228, 145, 58, 20);
 		fields.get(ResourceType.MINIONS).setBounds(228, 170, 58, 20);
 
+        Main.logger.info("Created raffle image frame");
+
 	}
 
 	private class ImagePanel extends JPanel
 	{
 		public void paint(Graphics g)
 		{
+            Main.logger.info("Drawing image");
 			g.drawImage(img, 0, 0, null);
 		}
 	}
@@ -180,6 +184,8 @@ public class RaffleImageFrame extends JFrame {
 			this.type = type;
 			this.value = entrant.getResources().get(type);
 
+            Main.logger.info("Creating resource field for " + type + " with value " + value);
+
 			setText(Integer.toString(value));
 			setHorizontalAlignment(SwingConstants.RIGHT);
 			setEditable(false);
@@ -191,12 +197,15 @@ public class RaffleImageFrame extends JFrame {
 						i = Integer.parseInt(getText());
 						if (i > 2700)
 						{
+                            Main.logger.info("Detected that field is greater than 2700, setting to red");
 							setBackground(Color.RED);
 							okay = false;
 						}
 
 						else
 						{
+
+                            Main.logger.info("Resource value is less than 2700, setting to white");
 							setBackground(Color.WHITE);
 							value = i;
 							okay = true;
@@ -206,6 +215,7 @@ public class RaffleImageFrame extends JFrame {
 
 					catch (NumberFormatException ex)
 					{
+                        Main.logger.warning("The value inserted was an invalid number, setting to red");
 						setBackground(Color.RED);
 						okay = false;
 					}
@@ -220,6 +230,7 @@ public class RaffleImageFrame extends JFrame {
 
 	public void go()
 	{
+        Main.logger.info("Setting raffle image frame visible");
 		setVisible(true);
 	}
 	private class CancelAction extends AbstractAction {
@@ -228,6 +239,7 @@ public class RaffleImageFrame extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Disregards this user and closes the dialog");
 		}
 		public void actionPerformed(ActionEvent e) {
+            Main.logger.info("Cancel button clicked, closing window");
 			RaffleImageFrame.this.dispose();
 		}
 	}
@@ -237,6 +249,7 @@ public class RaffleImageFrame extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Unlocks the fields and allows editing to fix the values");
 		}
 		public void actionPerformed(ActionEvent e) {
+            Main.logger.info("Amend button clicked, unlocking fields");
 
 			RaffleImageFrame.this.amended = true;
 			for (ResourceField r : RaffleImageFrame.this.fields.values())
@@ -253,9 +266,11 @@ public class RaffleImageFrame extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Submits the data in the form");
 		}
 		public void actionPerformed(ActionEvent e) {
+            Main.logger.info("Submit button clicked");
 
 			if (RaffleImageFrame.this.amended)
 			{
+                Main.logger.info("Frame was amended, double checking total");
 				HashMap<ResourceType, Integer> readFields = new HashMap();
 				int total = 0;
 				for (ResourceType rt : ResourceType.values())
@@ -268,6 +283,7 @@ public class RaffleImageFrame extends JFrame {
 					}
 					else
 					{
+                        Main.logger.warning("One of the fields contained an invalid value, stopping submit");
 						new RaffleErrorPopup("One of more of the fields contains an invalid value");
 						return;
 					}
@@ -275,19 +291,24 @@ public class RaffleImageFrame extends JFrame {
 
 				if (total > 2701)
 				{
+                    Main.logger.warning("The total resources is too large");
 					new RaffleErrorPopup("The total resources is too large");
 					return;
 				}
 
+                Main.logger.info("Values are fine, copying back to entrant object");
 				RaffleImageFrame.this.entrant.amend(RaffleImageFrame.this.nameField.getText(), readFields);
 			}
 
 			try
 			{
+                Main.logger.info("Attempting to write to log...");
 				BufferedWriter logWriter = new BufferedWriter(new FileWriter(Main.getLog(), true));
 				logWriter.newLine();
 				logWriter.write(Calendar.getInstance().getTimeInMillis()+","+RaffleImageFrame.this.entrant.printString());
 				logWriter.close();
+
+                Main.logger.info("Attempting to save image...");
 				RaffleImageFrame.this.entrant.saveImg();
 				new SuccessPopup(RaffleImageFrame.this);
 				RaffleImageFrame.this.setEnabled(false);
@@ -296,6 +317,7 @@ public class RaffleImageFrame extends JFrame {
 
 			catch (Exception ex)
 			{
+                Main.logger.severe("There was an error submitting the data");
 				new RaffleErrorPopup("There was an error submitting the data");
 				ex.printStackTrace();
 			}

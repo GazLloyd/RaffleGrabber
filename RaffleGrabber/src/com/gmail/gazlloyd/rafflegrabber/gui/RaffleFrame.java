@@ -36,6 +36,7 @@ public class RaffleFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public RaffleFrame(ImageHandler ih, File path) {
+        Main.logger.info("Creating raffle frame");
 		this.ih = ih;
 
 		setTitle("Raffle Image Grabber");
@@ -76,6 +77,7 @@ public class RaffleFrame extends JFrame {
 		fc.setAcceptAllFileFilterUsed(false);
 		fc.setAccessory(new ImagePreview(fc));
 
+        Main.logger.info("Finished creating raffle frame!");
 
 	}
 	private class LoadAction extends AbstractAction {
@@ -84,22 +86,26 @@ public class RaffleFrame extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Load an already-saved image");
 		}
 		public void actionPerformed(ActionEvent e) {
+            Main.logger.info("Load button pressed");
 
 			int returnVal = fc.showOpenDialog(RaffleFrame.this);
+            Main.logger.info("Return value obtained: " + returnVal);
 
 			if(JFileChooser.APPROVE_OPTION == returnVal)
 			{
 				File file = fc.getSelectedFile();
+                Main.logger.info("File chosen: " + file.getPath());
 				BufferedImage img = ih.loadImage(file);
 				try
 				{
 					Entrant entrant = new Entrant(img);
-					System.out.println(entrant);
+                    Main.logger.info("Entrant found, values: " + entrant);
 					RaffleImageFrame rif = new RaffleImageFrame(entrant);
 					rif.go();
 				}
 				catch (RaffleImageException rie)
 				{
+                    Main.logger.severe("There was an error loading the entrant: " + rie.msg);
 					new RaffleErrorPopup(rie.msg);
 				}
 
@@ -112,6 +118,7 @@ public class RaffleFrame extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Exit the raffle grabber");
 		}
 		public void actionPerformed(ActionEvent e) {
+            Main.logger.info("Exit pressed, exiting...");
 			System.exit(0);
 		}
 	}
@@ -121,23 +128,28 @@ public class RaffleFrame extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Capture an image from the screen");
 		}
 		public void actionPerformed(ActionEvent e) {
+            Main.logger.info("Capture pressed");
 			BufferedImage img;
 			try
 			{
+                Main.logger.info("Attempting screen capture...");
 				Robot r = new Robot();
 				img = r.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+                Main.logger.info("Screen captured! Dimensions: " + Toolkit.getDefaultToolkit().getScreenSize());
 				Entrant entrant = new Entrant(img);
-				System.out.println(entrant);
+                Main.logger.info("Entrant found, values: " + entrant);
 				RaffleImageFrame rif = new RaffleImageFrame(entrant);
 				rif.go();
 			}
 			catch (RaffleImageException rie)
 			{
+                Main.logger.severe("There was an error loading the entrant: " + rie.msg);
 				new RaffleErrorPopup(rie.msg);
 			}
 
 			catch (AWTException ex)
 			{
+                Main.logger.severe("There was an error capturing the screen");
 				ex.printStackTrace();
 			}
 

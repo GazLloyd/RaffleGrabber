@@ -32,6 +32,7 @@ public class RaffleErrorPopup extends JDialog {
 	 * Create the dialog.
 	 */
 	public RaffleErrorPopup(String msg) {
+        Main.logger.info("Creating raffle error popup");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(RaffleErrorPopup.class.getResource("/templates/error.png")));
 		setTitle("Error");
 		setBounds(100, 100, 450, 300);
@@ -46,7 +47,7 @@ public class RaffleErrorPopup extends JDialog {
 		{
 			JTextPane textPane = new JTextPane();
 			textPane.setText(msg);
-			textPane.setBackground(new Color(255,255,255,0));
+			textPane.setOpaque(false);
 			textPane.setEditable(false);
 			contentPanel.add(textPane);
 		}
@@ -100,6 +101,7 @@ public class RaffleErrorPopup extends JDialog {
 			putValue(SHORT_DESCRIPTION, "Close the dialog");
 		}
 		public void actionPerformed(ActionEvent e) {
+            Main.logger.info("OK button pressed");
 			RaffleErrorPopup.this.dispose();
 		}
 	}

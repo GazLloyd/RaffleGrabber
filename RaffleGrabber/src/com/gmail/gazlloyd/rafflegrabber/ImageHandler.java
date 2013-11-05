@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.gmail.gazlloyd.rafflegrabber.gui.Main;
 import com.gmail.gazlloyd.rafflegrabber.gui.RaffleErrorPopup;
 
 public class ImageHandler {
@@ -25,7 +26,7 @@ public class ImageHandler {
 
 		catch (IOException e)
 		{
-			System.out.println("ioexception when loading " + path);
+			Main.logger.severe("ioexception when loading " + path);
 		}
 
 		catch (RaffleImageException e)
@@ -53,7 +54,7 @@ public class ImageHandler {
 
 		catch (IOException e)
 		{
-			System.out.println("ioexception when loading " + file);
+			Main.logger.severe("ioexception when loading " + file);
 		}
 
 		return null;
@@ -69,7 +70,7 @@ public class ImageHandler {
 
 		catch (IOException e)
 		{
-			System.out.println("Failed to save to " + path);
+			Main.logger.severe("Failed to save to " + path);
 		}
 	}
 

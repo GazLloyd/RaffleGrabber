@@ -1,5 +1,7 @@
 package com.gmail.gazlloyd.rafflegrabber;
 
+import com.gmail.gazlloyd.rafflegrabber.gui.Main;
+
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -18,24 +20,31 @@ public class ResourceReader {
 
 	public static void initialise()
 	{
+
+        Main.logger.info("Loading resource reader...");
 		nameImgs = new HashMap();
 
 		try
 		{
+            Main.logger.info("Loading number images");
 			for (int i = 0; i < 10; i++)
 				numImgs[i] = ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/"+i+".png"));
 
+            Main.logger.info("Loading alphabetic character images");
 			for (char ch : characters)
 			{
 				nameImgs.put(Character.toUpperCase(ch), ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/name/u"+ch+".png")));
 				nameImgs.put(Character.toLowerCase(ch), ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/name/l"+ch+".png")));
 			}
 
+            Main.logger.info("Loading numeric and special characters");
 			for (char ch : otherChars)
 				nameImgs.put(ch, ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/name/"+ch+".png")));
-			
+
+            Main.logger.info("Loading space");
 			nameImgs.put(' ', ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/name/space.png")));
 
+            Main.logger.info("Loading left and right delimiters for name");
 			nameLeft = ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/namefindleft.png"));
 			nameRight = ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/namefindright.png"));
 
@@ -44,36 +53,32 @@ public class ResourceReader {
 		}
 		catch (IOException e)
 		{
-
+            Main.logger.severe("There was an error loading one of the images");
 		}
 
 	}
 
 	public static int readInt(BufferedImage img) throws RaffleImageException
 	{
-		//System.out.println("starting to read image");
+        Main.logger.info("Starting to read image");
 		BufferedImage workingImg = img;
 
 		ArrayList<Integer> ints = new ArrayList(4);
-		//System.out.println("defined array");
 
 		boolean nonefound = true;
 
 		jloop:
 			for(int j = 0; j < 4; j++)
 			{
-				//System.out.println("loop j " + j);
 				Point leftmost = new Point(workingImg.getWidth()-2, 0);
 				boolean notfound = true;
 				int leftint=0;
 				for (int i = 0; i < 10; i++)
 				{
-					//System.out.println("loop i " + i);
 					Point currpoint = ImageUtils.indexOfIgnoreWhite(workingImg, numImgs[i]);
 
 					if (currpoint != null && currpoint.x < leftmost.x)
 					{
-						//System.out.println("found one!");
 						leftmost = currpoint;
 						leftint = i;
 						notfound = false;
@@ -81,27 +86,23 @@ public class ResourceReader {
 					}
 				}
 
-				//System.out.println("finished i loop");
 				if (notfound)
 				{
-
-					//System.out.println("found none, breaking");
 					break;
 				}
 
 				else
 				{
-
-					//System.out.println("found one, not breaking");
 					ints.add(leftint);
 					int w = numImgs[leftint].getWidth();
-					//System.out.println("cropping working image");
 					workingImg = workingImg.getSubimage(leftmost.x+w, 0, workingImg.getWidth()-w-leftmost.x, workingImg.getHeight());
 				}
 			}
 
-		if (nonefound)
+		if (nonefound) {
+            Main.logger.warning("Did not find any numbers in the image");
 			throw new RaffleImageException("Could not read one or more resource values - make sure the image is uncovered!");
+        }
 
 		int returnInt;
 
@@ -127,17 +128,20 @@ public class ResourceReader {
 			returnInt = 0;
 		}
 
+        Main.logger.info("Found the value: " + returnInt);
 		return returnInt;
 	}
 
 	public static String readName(BufferedImage img) throws RaffleImageException
 	{
+        Main.logger.info("Attempting to read name...");
 		Point left = ImageUtils.indexOfName(img, nameLeft);
 		Point right = ImageUtils.indexOfName(img, nameRight);
 
-		if (left == null || right == null)
+		if (left == null || right == null) {
+            Main.logger.warning("Could not find left or right area of the name");
 			throw new RaffleImageException("Cannot read name - make sure the image is uncovered");
-
+        }
 		else
 		{
 			char[] name = new char[15];
@@ -181,11 +185,14 @@ public class ResourceReader {
 				else break;
 			}
 
-			if (nonefound)
+			if (nonefound) {
+                Main.logger.warning("Did not find a name");
 				throw new RaffleImageException("Could not read name - make sure the image is uncovered!");
-			else
+            }
+            else {
+                Main.logger.info("Found name: " + new String(name).trim());
 				return (new String(name)).trim();
-
+            }
 		}
 
 	}
