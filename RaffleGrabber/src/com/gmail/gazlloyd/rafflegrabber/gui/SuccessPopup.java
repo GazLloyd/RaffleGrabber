@@ -37,6 +37,7 @@ public class SuccessPopup extends JDialog {
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPanel.setOpaque(false);
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		{
 			JPanel panel = new IconPanel();
@@ -45,6 +46,7 @@ public class SuccessPopup extends JDialog {
 		{
 			JTextPane txtpnUserHasSuccessfully = new JTextPane();
 			txtpnUserHasSuccessfully.setText("User has successfully been submitted");
+            txtpnUserHasSuccessfully.setOpaque(false);
 			txtpnUserHasSuccessfully.setEditable(false);
 			contentPanel.add(txtpnUserHasSuccessfully);
 		}
@@ -78,6 +80,7 @@ public class SuccessPopup extends JDialog {
 			
 			catch (IOException e)
 			{
+                Main.logger.warning("Failed to load success image");
 			}
 		}
 		

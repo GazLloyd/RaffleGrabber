@@ -1,7 +1,6 @@
 package com.gmail.gazlloyd.rafflegrabber.gui;
 
 import java.awt.AWTException;
-import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -45,6 +44,7 @@ public class RaffleFrame extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+        contentPane.setOpaque(false);
 		contentPane.setLayout(null);
 
 		JButton loadButton = new JButton("Load an image");
@@ -64,7 +64,7 @@ public class RaffleFrame extends JFrame {
 
 		JTextPane txtpnWelcomeToThe = new JTextPane();
 		txtpnWelcomeToThe.setEditable(false);
-		txtpnWelcomeToThe.setBackground(new Color(255,255,255,0));
+		txtpnWelcomeToThe.setOpaque(false);
 		txtpnWelcomeToThe.setText("Welcome to the raffle image grabber!\r\n\r\nPress 'Load Image' to load in an already captured image.\r\nPress 'Capture Image' to obtain an image from the screen.");
 		txtpnWelcomeToThe.setBounds(10, 11, 239, 88);
 		contentPane.add(txtpnWelcomeToThe);

@@ -3,12 +3,12 @@ package com.gmail.gazlloyd.rafflegrabber;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
 import com.gmail.gazlloyd.rafflegrabber.gui.Main;
+import com.gmail.gazlloyd.rafflegrabber.gui.RaffleErrorPopup;
 
 public class Entrant {
 
@@ -170,7 +170,16 @@ public class Entrant {
 	public void saveImg() throws IOException
 	{
         Main.logger.info("Saving image...");
-		ImageIO.write(img.croppedImg, "png", new File(Main.getPath(), "\\auto\\"+Calendar.getInstance().getTime().toString().replace(':','-')+ " - " + name + ".png"));
+
+        File folder = new File(Main.getPath(), "\\"+TimeTools.folderName());
+
+        if (!folder.exists()) {
+            Main.logger.warning("Could not find folder, creating: "+folder);
+            new RaffleErrorPopup("This week's raffle folder not detected, creating");
+            folder.mkdir();
+        }
+
+		ImageIO.write(img.croppedImg, "png", new File(folder+"\\"+TimeTools.now()+ " - " + name + ".png"));
 	}
 	
 	public void amend(String name, HashMap<ResourceType, Integer> res)

@@ -5,11 +5,9 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import javax.swing.AbstractAction;
@@ -24,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 
 import com.gmail.gazlloyd.rafflegrabber.Entrant;
 import com.gmail.gazlloyd.rafflegrabber.Entrant.ResourceType;
+import com.gmail.gazlloyd.rafflegrabber.TimeTools;
 
 public class RaffleImageFrame extends JFrame {
 
@@ -305,7 +304,7 @@ public class RaffleImageFrame extends JFrame {
                 Main.logger.info("Attempting to write to log...");
 				BufferedWriter logWriter = new BufferedWriter(new FileWriter(Main.getLog(), true));
 				logWriter.newLine();
-				logWriter.write(Calendar.getInstance().getTimeInMillis()+","+RaffleImageFrame.this.entrant.printString());
+				logWriter.write(TimeTools.nowL()+","+RaffleImageFrame.this.entrant.printString());
 				logWriter.close();
 
                 Main.logger.info("Attempting to save image...");

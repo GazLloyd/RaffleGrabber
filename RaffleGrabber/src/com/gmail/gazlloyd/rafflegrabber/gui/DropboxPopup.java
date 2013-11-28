@@ -22,6 +22,7 @@ public class DropboxPopup extends JDialog {
 		setTitle("Dropbox Not Found");
 		setBounds(100, 100, 342, 258);
         setResizable(false);
+        contentPanel.setOpaque(false);
         setContentPane(contentPanel);
 		getContentPane().setLayout(new BorderLayout());
 

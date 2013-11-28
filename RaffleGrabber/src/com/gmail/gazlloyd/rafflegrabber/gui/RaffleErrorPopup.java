@@ -1,7 +1,6 @@
 package com.gmail.gazlloyd.rafflegrabber.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -39,6 +38,7 @@ public class RaffleErrorPopup extends JDialog {
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPanel.setOpaque(false);
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		{
 			JPanel panel = new IconPanel();

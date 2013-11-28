@@ -14,7 +14,7 @@ import com.gmail.gazlloyd.rafflegrabber.ResourceReader;
 
 public class Main {
 
-	public static final String defaultPath = System.getProperty("user.home")+"\\Dropbox\\testestetstets";
+	public static final String defaultPath = System.getProperty("user.home")+"\\Dropbox\\Raffle entries";
 	private static File path;
 	private static File log;
     public static Logger logger;
