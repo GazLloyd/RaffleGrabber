@@ -27,11 +27,25 @@ public class RaffleImage {
 	public void process() throws RaffleImageException
 	{
         Main.logger.info("Attempting to find raffle window...");
-		Point tr = ImageUtils.fuzzyIndexOf(rawImg, cornertr, 6);
-		Point br = ImageUtils.fuzzyIndexOf(rawImg, cornerbr, 6);
-		Point tl = ImageUtils.fuzzyIndexOf(rawImg, cornertl, 6);
-		Point bl = ImageUtils.fuzzyIndexOf(rawImg, cornerbl, 6);
-		
+		Point tr = ImageUtils.findCornerIndex(rawImg, cornertr, 6);
+		Point br = ImageUtils.findCornerIndex(rawImg, cornerbr, 6);
+		Point tl = ImageUtils.findCornerIndex(rawImg, cornertl, 6);
+		Point bl = ImageUtils.findCornerIndex(rawImg, cornerbl, 6);
+
+
+        if (tr == null) {
+            Main.logger.warning("Could not find top right!");
+        }
+        if (br == null) {
+            Main.logger.warning("Could not find bottom right!");
+        }
+        if (tl == null) {
+            Main.logger.warning("Could not find top left!");
+        }
+        if (bl == null) {
+            Main.logger.warning("Could not find bottom left!");
+        }
+
 		if (tr == null || br == null || tl == null || bl == null)
 		{
             Main.logger.warning("Could not find corners of the raffle window");

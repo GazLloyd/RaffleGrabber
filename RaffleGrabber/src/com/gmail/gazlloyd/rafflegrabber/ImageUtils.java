@@ -81,8 +81,39 @@ public class ImageUtils
 			}
 		return null;
 	}
-	
 
+    public static Point findCornerIndex(BufferedImage haystack, BufferedImage needle, int threshold)
+    {
+        int hw = haystack.getWidth();
+        int hh = haystack.getHeight();
+        int nw = needle.getWidth();
+        int nh = needle.getHeight();
+        for (int hy = 0; hy <= hh - nh; hy++)
+            for (int hx = 0; hx <= hw - nw; hx++)
+            {
+                boolean found = true;
+
+                label:
+                for (int ny = 0; ny < nh; ny++)
+                {
+                    for (int nx = 0; nx < nw; nx++)
+                    {
+                        if (needle.getRGB(nx, ny) == whiteRGB) continue;    //if current needle pixel is white, ignore and move on to next pixel
+                        if (!fuzzyColorMatch(needle.getRGB(nx, ny), haystack.getRGB(hx + nx, hy + ny), threshold)) {
+                            found = false;
+                            break label;
+                        }
+                    }
+                }
+                if (found) {
+                    return new Point(hx, hy);
+                }
+            }
+        return null;
+    }
+
+
+/*  original fuzzyIndexOf for reference
 	public static Point fuzzyIndexOf(BufferedImage haystack, BufferedImage needle, int threshold)
 	{
 		int hw = haystack.getWidth();
@@ -111,7 +142,7 @@ public class ImageUtils
 			}
 		return null;
 	}
-
+*/
 	public static boolean equals(BufferedImage a, BufferedImage b)
 	{
 		int aw = a.getWidth();int ah = a.getHeight();int bw = b.getWidth();int bh = b.getHeight();
