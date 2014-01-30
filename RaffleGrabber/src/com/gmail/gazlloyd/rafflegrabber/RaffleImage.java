@@ -27,10 +27,11 @@ public class RaffleImage {
 	public void process() throws RaffleImageException
 	{
         Main.logger.info("Attempting to find raffle window...");
-		Point tr = ImageUtils.findCornerIndex(rawImg, cornertr, 6);
-		Point br = ImageUtils.findCornerIndex(rawImg, cornerbr, 6);
-		Point tl = ImageUtils.findCornerIndex(rawImg, cornertl, 6);
-		Point bl = ImageUtils.findCornerIndex(rawImg, cornerbl, 6);
+        int threshold = 20;
+		Point tr = ImageUtils.findCornerIndex(rawImg, cornertr, threshold);
+		Point br = ImageUtils.findCornerIndex(rawImg, cornerbr, threshold);
+		Point tl = ImageUtils.findCornerIndex(rawImg, cornertl, threshold);
+		Point bl = ImageUtils.findCornerIndex(rawImg, cornerbl, threshold);
 
 
         if (tr == null) {

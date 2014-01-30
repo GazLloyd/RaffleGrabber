@@ -1,9 +1,6 @@
 package com.gmail.gazlloyd.rafflegrabber.gui;
 
-import java.awt.AWTException;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -134,8 +131,8 @@ public class RaffleFrame extends JFrame {
 			{
                 Main.logger.info("Attempting screen capture...");
 				Robot r = new Robot();
-				img = r.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
-                Main.logger.info("Screen captured! Dimensions: " + Toolkit.getDefaultToolkit().getScreenSize());
+				img = r.createScreenCapture(new Rectangle(new Point(0,0), Toolkit.getDefaultToolkit().getScreenSize()));
+                Main.logger.info("Screen captured! Dimensions: " + img.getWidth() + "x" + img.getHeight());
 				Entrant entrant = new Entrant(img);
                 Main.logger.info("Entrant found, values: " + entrant);
 				RaffleImageFrame rif = new RaffleImageFrame(entrant);
