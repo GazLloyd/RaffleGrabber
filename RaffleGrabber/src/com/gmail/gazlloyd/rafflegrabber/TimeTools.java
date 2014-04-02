@@ -32,7 +32,7 @@ public class TimeTools {
 
     public static void initialise() {
         Main.logger.info("Initialising TimeTools");
-        citadel_start = new Date(1311672600L*1000L);
+        citadel_start = new Date(1311685200L*1000L);    // 26 July 2011, 13:00 UTC, in milliseconds - see http://www.unixtimestamp.com/
         Date curr = new Date();
         sdf.setTimeZone(utc);
 

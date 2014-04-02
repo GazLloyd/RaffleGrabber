@@ -138,6 +138,13 @@ public class ResourceReader {
 		Point left = ImageUtils.indexOfName(img, nameLeft);
 		Point right = ImageUtils.indexOfName(img, nameRight);
 
+        if (left == null) {
+            Main.logger.warning("Could not find left side of name");
+        }
+        if (right == null) {
+            Main.logger.warning("Could not find right side of name");
+        }
+
 		if (left == null || right == null) {
             Main.logger.warning("Could not find left or right area of the name");
 			throw new RaffleImageException("Cannot read name - make sure the image is uncovered");

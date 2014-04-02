@@ -18,6 +18,7 @@ public class ImageUtils
 	
 	public static Point indexOfIgnoreWhite(BufferedImage haystack, BufferedImage needle)
 	{
+        int threshold = 10;
 		int hw = haystack.getWidth();
 		int hh = haystack.getHeight();
 		int nw = needle.getWidth();
@@ -31,8 +32,10 @@ public class ImageUtils
 				{
 					for (int nx = 0; nx < nw; nx++)
 					{
-						if((needle.getRGB(nx, ny) == whiteRGB && haystack.getRGB(hx+nx, hy+ny) == blackRGB)
-								|| (needle.getRGB(nx,ny) == blackRGB && haystack.getRGB(hx+nx, hy+ny) != blackRGB))
+                        int needleRGB = needle.getRGB(nx,ny), hayRGB = haystack.getRGB(hx+nx,hy+ny);
+
+						if((fuzzyColorMatch(needleRGB,whiteRGB,threshold) && fuzzyColorMatch(hayRGB,blackRGB,threshold))
+								|| (fuzzyColorMatch(needleRGB,blackRGB,threshold) && !fuzzyColorMatch(hayRGB,blackRGB,threshold)))
 						{
 							found = false;
 							break label;
@@ -49,6 +52,7 @@ public class ImageUtils
 	
 	public static Point indexOfName(BufferedImage haystack, BufferedImage needle)
 	{
+        int threshold = 10;
 		int hw = haystack.getWidth();
 		int hh = haystack.getHeight();
 		int nw = needle.getWidth();
@@ -65,9 +69,9 @@ public class ImageUtils
 						int hayRGB = haystack.getRGB(hx+nx, hy+ny);
 						int needleRGB = needle.getRGB(nx,ny);
 						
-						if((needleRGB == whiteRGB && hayRGB != whiteRGB)
-								|| (needleRGB == blackRGB && hayRGB != blackRGB)
-								|| (needleRGB == blueRGB && (hayRGB == blackRGB || hayRGB == whiteRGB)))
+						if((fuzzyColorMatch(needleRGB,whiteRGB,threshold) && !fuzzyColorMatch(hayRGB,whiteRGB,threshold))
+								|| (fuzzyColorMatch(needleRGB,blackRGB,threshold) && !fuzzyColorMatch(hayRGB,blackRGB,threshold))
+								|| (fuzzyColorMatch(needleRGB,blueRGB,threshold) && (fuzzyColorMatch(hayRGB,blackRGB,threshold) || fuzzyColorMatch(hayRGB,whiteRGB,threshold))))
 						{
 							found = false;
 							break label;
