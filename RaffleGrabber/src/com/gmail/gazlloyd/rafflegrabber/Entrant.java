@@ -171,7 +171,7 @@ public class Entrant {
 	{
         Main.logger.info("Saving image...");
 
-        File folder = new File(Main.getPath(), "\\"+TimeTools.folderName());
+        File folder = new File(Main.getPath(), File.separator+TimeTools.folderName());
 
         if (!folder.exists()) {
             Main.logger.warning("Could not find folder, creating: "+folder);
@@ -179,7 +179,7 @@ public class Entrant {
             folder.mkdir();
         }
 
-		ImageIO.write(img.croppedImg, "png", new File(folder+"\\"+TimeTools.now()+ " - " + name + ".png"));
+		ImageIO.write(img.croppedImg, "png", new File(folder+File.separator+TimeTools.now()+ " - " + name + ".png"));
 	}
 	
 	public void amend(String name, HashMap<ResourceType, Integer> res)
