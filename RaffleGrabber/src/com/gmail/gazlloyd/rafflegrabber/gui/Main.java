@@ -14,7 +14,7 @@ import com.gmail.gazlloyd.rafflegrabber.ResourceReader;
 
 public class Main {
 
-	public static final String defaultPath = System.getProperty("user.home")+"\\Dropbox\\Raffle entries";
+	public static final String defaultPath = System.getProperty("user.home")+File.separator+"Dropbox"+File.separator+"Raffle entries";
 	private static File path;
 	private static File log;
     public static Logger logger;
@@ -51,8 +51,8 @@ public class Main {
     }
     public static void cont(File pathIn) {
         Main.path = pathIn;
-		File logDir = new File(path,"\\auto");
-		log = new File(logDir, "\\log.txt");
+		File logDir = new File(path,File.separator+"auto");
+		log = new File(logDir, File.separator+"log.txt");
 		
 		if(!logDir.exists()) {
             logger.info("Log file directory not found, creating...");
