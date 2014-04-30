@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.logging.Logger;
 
+import java.util.Scanner;
+import java.io.FileNotFoundException;
+
 import javax.swing.UIManager;
 
 import com.gmail.gazlloyd.rafflegrabber.ImageHandler;
@@ -37,8 +40,25 @@ public class Main {
 		}
 
         logger.info("Checking for Dropbox folder...");
+        
+        String path;
+        
+        path = defaultPath;
+        
+        try {
+	        File settingsFile = new File(System.getProperty("user.home")+File.separator+".rafflegrabber");
+	        if(settingsFile.canRead()) {
+	        	String otherPath = new Scanner(settingsFile, "UTF-8").useDelimiter("\\A").next();
+	        	if((new File(otherPath)).canRead()) {
+	        		path = otherPath;
+	        	}
+	        }
+	    }
+	    catch (FileNotFoundException e) {
+	    	
+	    }
 
-		if (!(new File(defaultPath)).canRead())
+		if (!(new File(path)).canRead())
 		{
             logger.warning("Failed to find dropbox folder, launching popup");
             new DropboxPopup();
@@ -46,7 +66,7 @@ public class Main {
 
 		else {
             logger.info("Found Dropbox folder!");
-            cont(new File(defaultPath));
+            cont(new File(path));
         }
     }
     public static void cont(File pathIn) {

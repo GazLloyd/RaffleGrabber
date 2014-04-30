@@ -3,6 +3,9 @@ package com.gmail.gazlloyd.rafflegrabber.gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.PrintStream;
+import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 
 import javax.swing.*;
 
@@ -79,6 +82,22 @@ public class DropboxPopup extends JDialog {
 				path = directoryChooser.getSelectedFile();
                 Main.logger.info("File chosen: " + path.toPath() + ", closing popup");
 				DropboxPopup.this.dispose();
+				
+				PrintStream out = null;
+				try {
+					out = new PrintStream(new FileOutputStream(System.getProperty("user.home") + File.separator + ".rafflegrabber"));
+					out.print(path.toPath());
+				}
+				catch (FileNotFoundException exception) {
+					
+				}
+				finally {
+					if(out != null) {
+						out.close();
+					}
+				}
+				
+				
                 Main.cont(path);
 			}
 
