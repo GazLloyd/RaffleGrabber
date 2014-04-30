@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class DropboxPopup extends JDialog {
 
@@ -16,34 +17,38 @@ public class DropboxPopup extends JDialog {
 	private Action cancelAction = new CancelAction();
 	protected File path;
 
+    public static void main(String args[]) {
+        new DropboxPopup();
+    }
 
 	/**
 	 * Create the dialog.
 	 */
 	public DropboxPopup() {
+        String nl = System.getProperty("line.separator");
+
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("Dropbox Not Found");
 		setBounds(100, 100, 342, 258);
         setResizable(false);
         contentPanel.setOpaque(false);
         setContentPane(contentPanel);
-		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
 		JTextPane messageArea = new JTextPane();
-		messageArea.setBounds(10, 11, 306, 165);
-        messageArea.setFont(new Font("Ariel", Font.PLAIN, 12));
         messageArea.setEditable(false);
         messageArea.setOpaque(false);
-		messageArea.setText("The Raffle Entries folder in the Dropbox was not found. This may be because:" +
-                "\r\n\r\n1. Dropbox is not installed.\r\n2. You are not part of the Raffle Entries folder - please contact Gaz." +
-                "\r\n3. You set the Dropbox folder to a non-default location." +
-                "\r\n\r\nPress OK to open the directory chooser and navigate to the directory you wish to save images to." +
-                "\r\nPress Cancel to exit the application.\r\n");
+		messageArea.setText("The Raffle Entries folder in the Dropbox was not found. This may be because:" +nl+nl+
+                "1. Dropbox is not installed."+nl+"2. You are not part of the Raffle Entries folder - please contact Gaz." +nl+
+                "3. You set the Dropbox folder to a non-default location." +nl+nl+
+                "Press OK to open the directory chooser and navigate to the directory you wish to save images to." +nl+
+                "Press Cancel to exit the application."+nl);
 
-        getContentPane().add(messageArea, BorderLayout.CENTER);
+        contentPanel.add(messageArea);
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPane.setBorder(new EmptyBorder(5,5,5,5));
 		{
 			JButton okButton = new JButton("OK");
 			okButton.setAction(okAction);
@@ -58,7 +63,8 @@ public class DropboxPopup extends JDialog {
 			buttonPane.add(cancelButton);
 		}
 
-        getContentPane().add(buttonPane, BorderLayout.SOUTH);
+        contentPanel.add(buttonPane);
+        pack();
         setVisible(true);
         Main.logger.info("Popup constructed and made visible");
 	}
@@ -85,8 +91,21 @@ public class DropboxPopup extends JDialog {
 				
 				PrintStream out = null;
 				try {
-					out = new PrintStream(new FileOutputStream(System.getProperty("user.home") + File.separator + ".rafflegrabber"));
-					out.print(path.toPath());
+                    Main.logger.info("Attempting to save choice...");
+                    if (System.getProperty("os.name").matches("[Ww][Ii][Nn][Dd][Oo][Ww][Ss] .*")) {
+                        File dir = new File(System.getenv("APPDATA")+File.separator+".rafflegrabber");
+                        Main.logger.info("OS is Windows, saving to: "+dir+File.separator+".rafflegrabber");
+                        if (!dir.exists())
+                            dir.mkdir();
+                        out = new PrintStream(new FileOutputStream(dir + File.separator + ".rafflegrabber"));
+                    }
+                    else {
+					    out = new PrintStream(new FileOutputStream(System.getProperty("user.home") + File.separator + ".rafflegrabber"));
+                        Main.logger.info("Non-Windows OS, saving to "+System.getProperty("user.home")+File.separator+".rafflegrabber");
+                    }
+
+                    out.print(path.toPath());
+                    Main.logger.info("Choice of folder saved!");
 				}
 				catch (FileNotFoundException exception) {
 					
