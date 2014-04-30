@@ -5,14 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
-import javax.swing.border.EmptyBorder;
+import javax.swing.*;
 
 import com.gmail.gazlloyd.rafflegrabber.Entrant;
 import com.gmail.gazlloyd.rafflegrabber.ImageHandler;
@@ -36,35 +29,49 @@ public class RaffleFrame extends JFrame {
 		this.ih = ih;
 
 		setTitle("Raffle Image Grabber");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(100, 100, 275, 251);
 		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
         contentPane.setOpaque(false);
-		contentPane.setLayout(null);
+		contentPane.setLayout(new BoxLayout(contentPane,BoxLayout.Y_AXIS));
 
-		JButton loadButton = new JButton("Load an image");
+        JTextPane txtpnWelcomeToThe = new JTextPane();
+        txtpnWelcomeToThe.setEditable(false);
+        txtpnWelcomeToThe.setOpaque(false);
+        txtpnWelcomeToThe.setText("Welcome to the raffle image grabber!\r\n\r\nPress 'Load' to load in an already captured image.\r\nPress 'Capture' to obtain an image from the screen.");
+        //txtpnWelcomeToThe.setBounds(10, 11, 239, 88);
+        contentPane.add(txtpnWelcomeToThe);
+
+        JPanel buttons = new JPanel();
+        buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
+        buttons.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        contentPane.add(buttons);
+
+		JButton loadButton = new JButton("Load");
 		loadButton.setAction(loadAction);
-		loadButton.setBounds(65, 111, 113, 23);
-		contentPane.add(loadButton);
+		//loadButton.setBounds(65, 111, 113, 23);
+        loadButton.setAlignmentX(CENTER_ALIGNMENT);
+		buttons.add(loadButton);
 
-		JButton exitButton = new JButton("Exit");
-		exitButton.setAction(exitAction);
-		exitButton.setBounds(75, 179, 89, 23);
-		contentPane.add(exitButton);
+        buttons.add(Box.createRigidArea(new Dimension(10,0)));
 
-		JButton btnNewButton_2 = new JButton("Capture an image");
-		btnNewButton_2.setAction(captureAction);
-		btnNewButton_2.setBounds(51, 145, 141, 23);
-		contentPane.add(btnNewButton_2);
+		JButton captureButton = new JButton("Capture");
+		captureButton.setAction(captureAction);
+		//captureButton.setBounds(51, 145, 141, 23);
+        captureButton.setAlignmentX(CENTER_ALIGNMENT);
+		buttons.add(captureButton);
 
-		JTextPane txtpnWelcomeToThe = new JTextPane();
-		txtpnWelcomeToThe.setEditable(false);
-		txtpnWelcomeToThe.setOpaque(false);
-		txtpnWelcomeToThe.setText("Welcome to the raffle image grabber!\r\n\r\nPress 'Load Image' to load in an already captured image.\r\nPress 'Capture Image' to obtain an image from the screen.");
-		txtpnWelcomeToThe.setBounds(10, 11, 239, 88);
-		contentPane.add(txtpnWelcomeToThe);
+        buttons.add(Box.createRigidArea(new Dimension(10,0)));
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.setAction(exitAction);
+        //exitButton.setBounds(75, 179, 89, 23);
+        exitButton.setAlignmentX(CENTER_ALIGNMENT);
+        buttons.add(exitButton);
+
+        pack();
 
 		fc = new JFileChooser(path);
 		fc.setMultiSelectionEnabled(false);
@@ -79,7 +86,7 @@ public class RaffleFrame extends JFrame {
 	}
 	private class LoadAction extends AbstractAction {
 		public LoadAction() {
-			putValue(NAME, "Load an image");
+			putValue(NAME, "Load");
 			putValue(SHORT_DESCRIPTION, "Load an already-saved image");
 		}
 		public void actionPerformed(ActionEvent e) {
@@ -121,7 +128,7 @@ public class RaffleFrame extends JFrame {
 	}
 	private class CaptureAction extends AbstractAction {
 		public CaptureAction() {
-			putValue(NAME, "Capture an image");
+			putValue(NAME, "Capture");
 			putValue(SHORT_DESCRIPTION, "Capture an image from the screen");
 		}
 		public void actionPerformed(ActionEvent e) {
