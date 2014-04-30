@@ -16,11 +16,6 @@ public class Entrant {
 	private String name;
 	private HashMap<ResourceType, Integer> resources;
 
-	public enum ResourceType
-	{
-		TIMBER, STONE, ORE, PRECIOUS_ORE, CHARCOAL, BARS, PRECIOUS_BARS, CLOTH, RATIONS, MINIONS
-	}
-
 	public Entrant(BufferedImage img, String name, int timber, int stone, int ore, int pore, int coal, int bars, int pbars, int cloth, int rations, int minions)
 	{
         Main.logger.info("Creating new entrant object from values...");
@@ -37,7 +32,7 @@ public class Entrant {
 
 		this.name = name;
 
-		resources = new HashMap();
+		resources = new HashMap<ResourceType, Integer>();
 
 		resources.put(ResourceType.TIMBER, timber);
 		resources.put(ResourceType.STONE, stone);
@@ -59,7 +54,7 @@ public class Entrant {
 
 		this.name = readName();
 
-		resources = new HashMap();
+		resources = new HashMap<ResourceType, Integer>();
 		resources.put(ResourceType.TIMBER, readTimber());
 		resources.put(ResourceType.STONE, readStone());
 		resources.put(ResourceType.ORE, readOre());
