@@ -148,7 +148,7 @@ public class RaffleFrame extends JFrame {
 						Process p = new ProcessBuilder("/usr/sbin/screencapture", path).start();
 						p.waitFor();
 						img = ImageIO.read(f);
-						System.out.println(path);
+						f.delete();
 					} catch (Exception e2) {
 						throw new RaffleImageException("Failed to capture image using screencapture!");
 					}
