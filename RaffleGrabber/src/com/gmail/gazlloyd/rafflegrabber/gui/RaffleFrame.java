@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import javax.imageio.ImageIO;
 
 import javax.swing.*;
 
@@ -137,8 +138,22 @@ public class RaffleFrame extends JFrame {
 			try
 			{
                 Main.logger.info("Attempting screen capture...");
-				Robot r = new Robot();
-				img = r.createScreenCapture(new Rectangle(new Point(0,0), Toolkit.getDefaultToolkit().getScreenSize()));
+                if(!System.getProperty("os.name").equals("Mac OS X")) {
+                	Robot r = new Robot();
+					img = r.createScreenCapture(new Rectangle(new Point(0,0), Toolkit.getDefaultToolkit().getScreenSize()));
+                } else {
+                	try {
+	                	File f = File.createTempFile("rafflegrabber-", ".png");
+						String path = f.getPath();
+						Process p = new ProcessBuilder("/usr/sbin/screencapture", path).start();
+						p.waitFor();
+						img = ImageIO.read(f);
+						f.delete();
+					} catch (Exception e2) {
+						throw new RaffleImageException("Failed to capture image using screencapture!");
+					}
+                }
+				
                 Main.logger.info("Screen captured! Dimensions: " + img.getWidth() + "x" + img.getHeight());
 				Entrant entrant = new Entrant(img);
                 Main.logger.info("Entrant found, values: " + entrant);
