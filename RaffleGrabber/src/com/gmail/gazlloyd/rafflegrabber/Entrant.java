@@ -52,7 +52,11 @@ public class Entrant {
         Main.logger.info("Creating new entrant object from just image...");
 		this.img = new RaffleImage(img);
 
-		this.name = readName();
+        try {
+            this.name = readName();
+        } catch (RaffleImageException e) {
+            this.name = "";
+        }
 
 		resources = new HashMap<ResourceType, Integer>();
 		resources.put(ResourceType.TIMBER, readTimber());
