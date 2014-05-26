@@ -143,8 +143,42 @@ public class RaffleFrame extends JFrame {
 
                 //if not mac, use java.awt.Robot
                 if(!System.getProperty("os.name").equals("Mac OS X")) {
-                	Robot r = new Robot();
-					img = r.createScreenCapture(new Rectangle(new Point(0,0), Toolkit.getDefaultToolkit().getScreenSize()));
+                    GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                    GraphicsDevice[] devices = g.getScreenDevices();
+                    int deviceNum = devices.length;
+                    ArrayList<BufferedImage> images = new ArrayList<BufferedImage>(deviceNum);
+
+                    for (int i=0; i < deviceNum; i++) {
+                        Robot r = new Robot(devices[i]);
+                        images.add(r.createScreenCapture(new Rectangle(new Point(0,0), Toolkit.getDefaultToolkit().getScreenSize())));
+                    }
+
+                    int totalWidth = 0;
+                    int maxHeight = 0;
+
+                    for(int i = 0; i < deviceNum; i++) {
+                        try {
+                            totalWidth += images.get(i).getWidth();
+                            maxHeight = Math.max(maxHeight, images.get(i).getHeight());
+                        } catch (Exception e3) {
+
+                        }
+                    }
+
+                    img = new BufferedImage(totalWidth, maxHeight, BufferedImage.TYPE_INT_RGB);
+
+                    BufferedImage[] imageArray = images.toArray(new BufferedImage[deviceNum]);
+
+                    int currentWidth = 0;
+                    for(int i = 0; i < deviceNum; i++) {
+                        try {
+                            img.createGraphics().drawImage(imageArray[i], currentWidth, 0, null);
+                            currentWidth += imageArray[i].getWidth();
+                        } catch (Exception e3) {
+
+                        }
+                    }
+
                 } else {
 
                     //mac, use built-in screencapture utility
