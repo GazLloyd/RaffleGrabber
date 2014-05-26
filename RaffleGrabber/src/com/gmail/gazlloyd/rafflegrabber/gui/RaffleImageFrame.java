@@ -47,7 +47,7 @@ public class RaffleImageFrame extends JFrame {
 
         Main.logger.info("Creating raffle image frame");
 		setTitle("Entrant verification");
-        setResizable(true);
+        setResizable(false);
 		this.entrant = entrant;
 		this.img = entrant.getImg().croppedImg;
 

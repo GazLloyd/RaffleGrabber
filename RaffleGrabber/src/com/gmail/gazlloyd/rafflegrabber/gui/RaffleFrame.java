@@ -138,10 +138,14 @@ public class RaffleFrame extends JFrame {
 			try
 			{
                 Main.logger.info("Attempting screen capture...");
+
+                //if not mac, use java.awt.Robot
                 if(!System.getProperty("os.name").equals("Mac OS X")) {
                 	Robot r = new Robot();
 					img = r.createScreenCapture(new Rectangle(new Point(0,0), Toolkit.getDefaultToolkit().getScreenSize()));
                 } else {
+
+                    //mac, use built-in screencapture utility
                 	try {
 	                	File f = File.createTempFile("rafflegrabber-", ".png");
 						String path = f.getPath();
