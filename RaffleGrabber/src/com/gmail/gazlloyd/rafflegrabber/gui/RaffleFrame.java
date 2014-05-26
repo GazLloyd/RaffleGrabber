@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import javax.swing.*;
@@ -136,7 +137,7 @@ public class RaffleFrame extends JFrame {
         }
         public void actionPerformed(ActionEvent e) {
             Main.logger.info("Capture pressed");
-            BufferedImage img;
+            BufferedImage img = null;
             try
             {
                 Main.logger.info("Attempting screen capture...");
@@ -223,7 +224,18 @@ public class RaffleFrame extends JFrame {
             }
             catch (RaffleImageException rie)
             {
-                Main.logger.severe("There was an error loading the entrant: " + rie.msg);
+            	Main.logger.severe("There was an error loading the entrant: " + rie.msg);
+            	
+            	if(img != null) {
+            		try {
+	            		File f = File.createTempFile("rafflegrabber-", ".png");
+	            		ImageIO.write(img, "PNG", f);
+	            		Main.logger.info("Saved the grabbed image to: " + f.getPath());
+            		} catch(IOException e1) {
+            			Main.logger.severe("Failed to save grabbed image.");
+            		}
+            	}
+            	
                 new RaffleErrorPopup(rie.msg);
             }
 
