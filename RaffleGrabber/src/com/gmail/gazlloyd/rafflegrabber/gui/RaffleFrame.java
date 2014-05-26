@@ -1,5 +1,7 @@
 package com.gmail.gazlloyd.rafflegrabber.gui;
 
+import java.util.ArrayList;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
@@ -147,12 +149,56 @@ public class RaffleFrame extends JFrame {
 
                     //mac, use built-in screencapture utility
                 	try {
-	                	File f = File.createTempFile("rafflegrabber-", ".png");
-						String path = f.getPath();
-						Process p = new ProcessBuilder("/usr/sbin/screencapture", "-x", path).start();
+                		GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                		GraphicsDevice[] devices = g.getScreenDevices();
+                		int deviceNum = devices.length;
+                		ArrayList<File> files = new ArrayList<File>(deviceNum);
+                		ArrayList<String> args = new ArrayList<String>(deviceNum + 2);
+                		args.add("/usr/sbin/screencapture");
+                		args.add("-x");
+                		
+                		for(int i = 0; i < deviceNum; i++) {
+	                		File f = File.createTempFile("rafflegrabber-", ".png");
+	                		files.add(f);
+							String path = f.getPath();
+							args.add(path);
+						}
+						Process p = new ProcessBuilder(args).start();
 						p.waitFor();
-						img = ImageIO.read(f);
-						f.delete();
+						
+						ArrayList<BufferedImage> images = new ArrayList<BufferedImage>(deviceNum);
+						int totalWidth = 0;
+						int maxHeight = 0;
+						
+						File[] fileArray = files.toArray(new File[deviceNum]);
+						
+						for(int i = 0; i < deviceNum; i++) {
+							try {
+								File f = fileArray[i];
+								BufferedImage img1 = ImageIO.read(f);
+								images.add(img1);
+								f.delete();
+								totalWidth += img1.getWidth();
+								maxHeight = Math.max(maxHeight, img1.getHeight());
+							} catch (Exception e3) {
+								
+							}
+						}
+						
+						img = new BufferedImage(totalWidth, maxHeight, BufferedImage.TYPE_INT_RGB);
+						
+						BufferedImage[] imageArray = images.toArray(new BufferedImage[deviceNum]);
+						
+						int currentWidth = 0;
+						for(int i = 0; i < deviceNum; i++) {
+							try {
+								img.createGraphics().drawImage(imageArray[i], currentWidth, 0, null);
+								currentWidth += imageArray[i].getWidth();
+							} catch (Exception e3) {
+								
+							}
+						}
+						
 					} catch (Exception e2) {
 						throw new RaffleImageException("Failed to capture image using screencapture!");
 					}
