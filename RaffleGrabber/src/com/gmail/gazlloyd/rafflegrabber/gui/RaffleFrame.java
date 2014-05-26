@@ -145,7 +145,7 @@ public class RaffleFrame extends JFrame {
                 	try {
 	                	File f = File.createTempFile("rafflegrabber-", ".png");
 						String path = f.getPath();
-						Process p = new ProcessBuilder("/usr/sbin/screencapture", path).start();
+						Process p = new ProcessBuilder("/usr/sbin/screencapture", "-x", path).start();
 						p.waitFor();
 						img = ImageIO.read(f);
 						f.delete();
