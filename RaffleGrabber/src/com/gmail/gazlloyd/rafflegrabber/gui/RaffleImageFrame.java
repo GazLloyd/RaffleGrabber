@@ -84,7 +84,7 @@ public class RaffleImageFrame extends JFrame {
         valuesPanelRight.setLayout(new BoxLayout(valuesPanelRight, BoxLayout.Y_AXIS));
         valuesPanelRight.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-
+        String name = entrant.getName();
         JLabel lblPlayerName = new JLabel("Player Name:");
 		namePanel.add(lblPlayerName);
 
@@ -92,10 +92,9 @@ public class RaffleImageFrame extends JFrame {
         namePanel.add(Box.createRigidArea(new Dimension(10,0)));
 		namePanel.add(nameField);
 		nameField.setColumns(15);
-		nameField.setText(entrant.getName());
-		nameField.setEditable(false);
+		nameField.setText(name);
+		nameField.setEditable(name.equals(""));
         namePanel.add(Box.createRigidArea(new Dimension(10,0)));
-
 
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(submitAction);
