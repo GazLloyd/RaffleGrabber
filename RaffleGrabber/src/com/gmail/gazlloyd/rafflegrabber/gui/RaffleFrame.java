@@ -141,83 +141,20 @@ public class RaffleFrame extends JFrame {
             try
             {
                 Main.logger.info("Attempting screen capture...");
-
-
-                GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
-                GraphicsDevice[] devices = g.getScreenDevices();
-                int deviceNum = devices.length;
-                ArrayList<BufferedImage> images = new ArrayList<BufferedImage>(deviceNum);
-
-                //if not mac, use java.awt.Robot
-                if(!System.getProperty("os.name").equals("Mac OS X")) {
-                    for (int i=0; i < deviceNum; i++) {
-                        Robot r = new Robot(devices[i]);
-                        images.add(r.createScreenCapture(new Rectangle(new Point(0,0), Toolkit.getDefaultToolkit().getScreenSize())));
+                
+                Entrant entrant = null;
+                try {
+                    img = this.getImage(false);
+                    Main.logger.info("Screen captured! Dimensions: " + img.getWidth() + "x" + img.getHeight());
+                    entrant = new Entrant(img);
+                } catch(RaffleImageException e1) {
+                    // If entrant couldn't be found in image and OS is OS X, take a screenshot with screencapture
+                    if(System.getProperty("os.name").equals("Mac OS X")) {
+                        img = this.getImage(true);
+                        Main.logger.info("Screen captured! Dimensions: " + img.getWidth() + "x" + img.getHeight());
+                        entrant = new Entrant(img);
                     }
                 }
-                //if mac, use default screencapture
-                else {
-                    try {
-                        ArrayList<File> files = new ArrayList<File>(deviceNum);
-                        ArrayList<String> args = new ArrayList<String>(deviceNum + 2);
-                        args.add("/usr/sbin/screencapture");
-                        args.add("-x");
-
-                        for(int i = 0; i < deviceNum; i++) {
-                            File f = File.createTempFile("rafflegrabber-", ".png");
-                            files.add(f);
-                            String path = f.getPath();
-                            args.add(path);
-                        }
-                        Process p = new ProcessBuilder(args).start();
-                        p.waitFor();
-
-                        for (int i = 0; i < deviceNum; i++) {
-                            try {
-                                File f = files.get(i);
-                                BufferedImage img1 = ImageIO.read(f);
-                                images.add(img1);
-                                f.delete();
-                            }
-                            catch (Exception e3) {
-
-                            }
-                        }
-
-
-
-                    }
-                    catch (Exception e2) {
-                        throw new RaffleImageException("Failed to capture image using screencapture!");
-                    }
-                }
-
-                int totalWidth = 0;
-                int maxHeight = 0;
-
-                for(int i = 0; i < deviceNum; i++) {
-                    totalWidth += images.get(i).getWidth();
-                    maxHeight = Math.max(maxHeight, images.get(i).getHeight());
-                }
-
-
-                img = new BufferedImage(totalWidth, maxHeight, BufferedImage.TYPE_INT_RGB);
-
-                BufferedImage[] imageArray = images.toArray(new BufferedImage[deviceNum]);
-
-                int currentWidth = 0;
-                for(int i = 0; i < deviceNum; i++) {
-                    try {
-                        img.createGraphics().drawImage(imageArray[i], currentWidth, 0, null);
-                        currentWidth += imageArray[i].getWidth();
-                    } catch (Exception e3) {
-
-                    }
-                }
-
-
-                Main.logger.info("Screen captured! Dimensions: " + img.getWidth() + "x" + img.getHeight());
-                Entrant entrant = new Entrant(img);
                 Main.logger.info("Entrant found, values: " + entrant);
                 RaffleImageFrame rif = new RaffleImageFrame(entrant);
                 rif.go();
@@ -245,6 +182,80 @@ public class RaffleFrame extends JFrame {
                 ex.printStackTrace();
             }
 
+        }
+        public BufferedImage getImage(Boolean useScreencapture) throws AWTException, RaffleImageException {
+            GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice[] devices = g.getScreenDevices();
+            int deviceNum = devices.length;
+            ArrayList<BufferedImage> images = new ArrayList<BufferedImage>(deviceNum);
+            
+            //if not mac, use java.awt.Robot
+            if(!useScreencapture) {
+                for (int i=0; i < deviceNum; i++) {
+                    Robot r = new Robot(devices[i]);
+                    images.add(r.createScreenCapture(new Rectangle(new Point(0,0), Toolkit.getDefaultToolkit().getScreenSize())));
+                }
+            }
+            //if mac, use default screencapture
+            else {
+                try {
+                    ArrayList<File> files = new ArrayList<File>(deviceNum);
+                    ArrayList<String> args = new ArrayList<String>(deviceNum + 2);
+                    args.add("/usr/sbin/screencapture");
+                    args.add("-x");
+
+                    for(int i = 0; i < deviceNum; i++) {
+                        File f = File.createTempFile("rafflegrabber-", ".png");
+                        files.add(f);
+                        String path = f.getPath();
+                        args.add(path);
+                    }
+                    Process p = new ProcessBuilder(args).start();
+                    p.waitFor();
+
+                    for (int i = 0; i < deviceNum; i++) {
+                        try {
+                            File f = files.get(i);
+                            BufferedImage img1 = ImageIO.read(f);
+                            images.add(img1);
+                            f.delete();
+                        }
+                        catch (Exception e3) {
+
+                        }
+                    }
+
+
+
+                }
+                catch (Exception e2) {
+                    throw new RaffleImageException("Failed to capture image using screencapture!");
+                }
+            }
+
+            int totalWidth = 0;
+            int maxHeight = 0;
+
+            for(int i = 0; i < deviceNum; i++) {
+                totalWidth += images.get(i).getWidth();
+                maxHeight = Math.max(maxHeight, images.get(i).getHeight());
+            }
+
+            BufferedImage img = new BufferedImage(totalWidth, maxHeight, BufferedImage.TYPE_INT_RGB);
+
+            BufferedImage[] imageArray = images.toArray(new BufferedImage[deviceNum]);
+
+            int currentWidth = 0;
+            for(int i = 0; i < deviceNum; i++) {
+                try {
+                    img.createGraphics().drawImage(imageArray[i], currentWidth, 0, null);
+                    currentWidth += imageArray[i].getWidth();
+                } catch (Exception e3) {
+
+                }
+            }
+            
+            return img;
         }
     }
 }
