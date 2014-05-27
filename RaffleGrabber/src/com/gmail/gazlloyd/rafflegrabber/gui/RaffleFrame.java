@@ -11,9 +11,7 @@ import javax.imageio.ImageIO;
 
 import javax.swing.*;
 
-import com.gmail.gazlloyd.rafflegrabber.Entrant;
-import com.gmail.gazlloyd.rafflegrabber.ImageHandler;
-import com.gmail.gazlloyd.rafflegrabber.RaffleImageException;
+import com.gmail.gazlloyd.rafflegrabber.*;
 
 public class RaffleFrame extends JFrame {
 
@@ -106,7 +104,8 @@ public class RaffleFrame extends JFrame {
                 BufferedImage img = ih.loadImage(file);
                 try
                 {
-                    Entrant entrant = new Entrant(img);
+                    RaffleImage rafimg = ResourceReader.getRaffleImg(img);
+                    Entrant entrant = new Entrant(rafimg);
                     Main.logger.info("Entrant found, values: " + entrant);
                     RaffleImageFrame rif = new RaffleImageFrame(entrant);
                     rif.go();
@@ -138,59 +137,75 @@ public class RaffleFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             Main.logger.info("Capture pressed");
             BufferedImage img = null;
-            try
-            {
+            RaffleImage rafimg = null;
+
+            try {
                 Main.logger.info("Attempting screen capture...");
-                
-                Entrant entrant = null;
-                try {
-                    img = this.getImage(false);
-                    Main.logger.info("Screen captured! Dimensions: " + img.getWidth() + "x" + img.getHeight());
-                    entrant = new Entrant(img);
-                } catch(RaffleImageException e1) {
-                    // If entrant couldn't be found in image and OS is OS X, take a screenshot with screencapture
-                    if(System.getProperty("os.name").equals("Mac OS X")) {
+
+
+                img = this.getImage(false);
+                Main.logger.info("Screen captured! Dimensions: " + img.getWidth() + "x" + img.getHeight());
+
+                if (Main.isMac)
+                    rafimg = ResourceReader.getRaffleImgSupressed(img);
+                else
+                    rafimg = ResourceReader.getRaffleImg(img);
+
+                if (rafimg == null) {
+                    //Mac can use screencapture to try instead
+                    if (Main.isMac) {
+                        Main.logger.info("Couldn't find resource window with Robot, using screencapture");
                         img = this.getImage(true);
                         Main.logger.info("Screen captured! Dimensions: " + img.getWidth() + "x" + img.getHeight());
-                        entrant = new Entrant(img);
+
+                        rafimg = ResourceReader.getRaffleImg(img);
+                    }
+
+                    //other OSs cannot
+                    else {
+                        throw new RaffleImageException("Could not find resource window");
                     }
                 }
-                Main.logger.info("Entrant found, values: " + entrant);
+
+                Entrant entrant = new Entrant(rafimg);
                 RaffleImageFrame rif = new RaffleImageFrame(entrant);
                 rif.go();
+
             }
-            catch (RaffleImageException rie)
-            {
-            	Main.logger.severe("There was an error loading the entrant: " + rie.msg);
-            	
-            	if(img != null) {
-            		try {
-	            		File f = File.createTempFile("rafflegrabber-", ".png");
-	            		ImageIO.write(img, "PNG", f);
-	            		Main.logger.info("Saved the grabbed image to: " + f.getPath());
-            		} catch(IOException e1) {
-            			Main.logger.severe("Failed to save grabbed image.");
-            		}
-            	}
-            	
+
+            catch (RaffleImageException rie) {
+                Main.logger.severe("There was an error loading the entrant: " + rie.msg);
+
+                if(img != null) {
+                    try {
+                        File f = File.createTempFile("rafflegrabber-", ".png");
+                        ImageIO.write(img, "PNG", f);
+                        Main.logger.info("Saved the grabbed image to: " + f.getPath());
+                    }
+                    catch(IOException e1) {
+                        Main.logger.severe("Failed to save grabbed image.");
+                    }
+                }
+
                 new RaffleErrorPopup(rie.msg);
             }
 
-            catch (AWTException ex)
-            {
+            catch (AWTException ex) {
                 Main.logger.severe("There was an error capturing the screen");
                 ex.printStackTrace();
             }
 
         }
+
         public BufferedImage getImage(Boolean useScreencapture) throws AWTException, RaffleImageException {
             GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice[] devices = g.getScreenDevices();
             int deviceNum = devices.length;
             ArrayList<BufferedImage> images = new ArrayList<BufferedImage>(deviceNum);
-            
+
             //if not mac, use java.awt.Robot
             if(!useScreencapture) {
+                Main.logger.info("Attempting screen capture with java.awt.Robot");
                 for (int i=0; i < deviceNum; i++) {
                     Robot r = new Robot(devices[i]);
                     images.add(r.createScreenCapture(new Rectangle(new Point(0,0), Toolkit.getDefaultToolkit().getScreenSize())));
@@ -198,6 +213,11 @@ public class RaffleFrame extends JFrame {
             }
             //if mac, use default screencapture
             else {
+                if (!Main.isMac) {
+                    Main.logger.severe("OS is not Mac OSX, cannot use screencapture utility");
+                    return null;
+                }
+                Main.logger.info("Attempting screen capture with Mac OSX screencapture utility");
                 try {
                     ArrayList<File> files = new ArrayList<File>(deviceNum);
                     ArrayList<String> args = new ArrayList<String>(deviceNum + 2);
@@ -224,9 +244,6 @@ public class RaffleFrame extends JFrame {
 
                         }
                     }
-
-
-
                 }
                 catch (Exception e2) {
                     throw new RaffleImageException("Failed to capture image using screencapture!");
@@ -243,18 +260,16 @@ public class RaffleFrame extends JFrame {
 
             BufferedImage img = new BufferedImage(totalWidth, maxHeight, BufferedImage.TYPE_INT_RGB);
 
-            BufferedImage[] imageArray = images.toArray(new BufferedImage[deviceNum]);
-
             int currentWidth = 0;
             for(int i = 0; i < deviceNum; i++) {
                 try {
-                    img.createGraphics().drawImage(imageArray[i], currentWidth, 0, null);
-                    currentWidth += imageArray[i].getWidth();
+                    img.createGraphics().drawImage(images.get(i), currentWidth, 0, null);
+                    currentWidth += images.get(i).getWidth();
                 } catch (Exception e3) {
 
                 }
             }
-            
+
             return img;
         }
     }

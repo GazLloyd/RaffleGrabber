@@ -3,13 +3,9 @@ package com.gmail.gazlloyd.rafflegrabber.gui;
 import java.awt.HeadlessException;
 import java.io.*;
 import java.util.logging.Logger;
-
 import java.util.Scanner;
-
 import javax.swing.UIManager;
-
 import com.gmail.gazlloyd.rafflegrabber.ImageHandler;
-import com.gmail.gazlloyd.rafflegrabber.RaffleImage;
 import com.gmail.gazlloyd.rafflegrabber.ResourceReader;
 
 public class Main {
@@ -18,11 +14,16 @@ public class Main {
 	private static File path;
 	private static File log;
     public static Logger logger;
+    public static boolean isMac;
+    public static boolean isWindows;
+
 
 	public static void main(String[] args)
 	{
         logger = Logger.getLogger("RaffleGrabber");
         logger.info("Starting application");
+        isMac = System.getProperty("os.name").compareToIgnoreCase("mac os x") == 0;
+        isWindows = System.getProperty("os.name").matches("[Ww][Ii][Nn][Dd][Oo][Ww][Ss] .*");
 
 		try
 		{
@@ -45,7 +46,7 @@ public class Main {
         try {
             Main.logger.info("Attempting to check for previously saved folder...");
             File settingsFile;
-            if (System.getProperty("os.name").matches("[Ww][Ii][Nn][Dd][Oo][Ww][Ss] .*")) {
+            if (isWindows) {
                 File dir = new File(System.getenv("APPDATA")+File.separator+".rafflegrabber");
                 Main.logger.info("OS is Windows, loading from: "+dir+File.separator+".rafflegrabber");
                 settingsFile = new File(dir + File.separator + ".rafflegrabber");
@@ -118,7 +119,6 @@ public class Main {
 		
 		ImageHandler ih = new ImageHandler();
 		ResourceReader.initialise();
-		RaffleImage.initialise();
 		RaffleFrame rFrame = null;
 
         logger.info("Attempting to create raffle frame...");

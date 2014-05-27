@@ -10,10 +10,7 @@ import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import com.gmail.gazlloyd.rafflegrabber.Entrant;
-import com.gmail.gazlloyd.rafflegrabber.ResourceType;
-import com.gmail.gazlloyd.rafflegrabber.RaffleImage;
-import com.gmail.gazlloyd.rafflegrabber.TimeTools;
+import com.gmail.gazlloyd.rafflegrabber.*;
 
 public class RaffleImageFrame extends JFrame {
 
@@ -169,7 +166,7 @@ public class RaffleImageFrame extends JFrame {
 		public void paintComponent(Graphics g)
 		{
             Main.logger.info("Drawing image");
-			g.drawImage(img, 0, 0, RaffleImage.X, RaffleImage.Y, null);
+			g.drawImage(img, 0, 0, ResourceReader.X, ResourceReader.Y, null);
 		}
 	}
 

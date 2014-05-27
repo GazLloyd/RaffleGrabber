@@ -92,11 +92,11 @@ public class DropboxPopup extends JDialog {
 				PrintStream out = null;
 				try {
                     Main.logger.info("Attempting to save choice...");
-                    if (System.getProperty("os.name").matches("[Ww][Ii][Nn][Dd][Oo][Ww][Ss] .*")) {
+                    if (Main.isWindows) {
                         File dir = new File(System.getenv("APPDATA")+File.separator+".rafflegrabber");
                         Main.logger.info("OS is Windows, saving to: "+dir+File.separator+".rafflegrabber");
                         if (!dir.exists())
-                            dir.mkdir();
+                            dir.mkdirs();
                         out = new PrintStream(new FileOutputStream(dir + File.separator + ".rafflegrabber"));
                     }
                     else {

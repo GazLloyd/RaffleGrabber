@@ -21,7 +21,7 @@ public class ImageHandler {
 		try
 		{
 			BufferedImage f = ImageIO.read(new File(path));
-			return new RaffleImage(f);
+			return ResourceReader.getRaffleImg(f);
 		}
 
 		catch (IOException e)
@@ -38,22 +38,17 @@ public class ImageHandler {
 
 	}
 
-	public BufferedImage loadImage(String path)
-	{
+	public BufferedImage loadImage(String path) {
 		return loadImage(new File(path));
 
 	}
 	
-	public BufferedImage loadImage(File file)
-	{
-		try
-		{
-			BufferedImage f = ImageIO.read(file);
-			return f;
+	public BufferedImage loadImage(File file) {
+		try {
+			return ImageIO.read(file);
 		}
 
-		catch (IOException e)
-		{
+		catch (IOException e) {
 			Main.logger.severe("ioexception when loading " + file);
 		}
 
@@ -61,8 +56,7 @@ public class ImageHandler {
 	}
 	
 
-	public void saveImage(RaffleImage img, String path)
-	{
+	public void saveImage(RaffleImage img, String path) {
 		try
 		{
 			ImageIO.write(img.croppedImg, "png", new File(path));
