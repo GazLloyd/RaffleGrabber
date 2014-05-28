@@ -40,8 +40,7 @@ public class ResourceReader {
                 numImgs[i] = ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/"+i+".png"));
 
             Main.logger.info("Loading alphabetic character images");
-            for (char ch : characters)
-            {
+            for (char ch : characters) {
                 nameImgs.put(Character.toUpperCase(ch), ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/name/u"+ch+".png")));
                 nameImgs.put(Character.toLowerCase(ch), ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/name/l"+ch+".png")));
             }
@@ -79,7 +78,7 @@ public class ResourceReader {
 
     public static RaffleImage getRaffleImg(BufferedImage img) throws RaffleImageException {
 
-        RaffleImage imgout = null;
+        RaffleImage imgout;
 
         Main.logger.info("Attempting to find raffle window...");
 
@@ -95,6 +94,9 @@ public class ResourceReader {
             if (st.equalsIgnoreCase("tl"))
                 tl = corn;
         }
+
+        if (tl == null)
+            throw new RaffleImageException("Could not find resource window\n\nMake sure the window is uncovered!");
 
         Main.logger.info("Found raffle window");
         imgout = new RaffleImage(img,img.getSubimage(tl.x, tl.y, X, Y));
@@ -123,13 +125,11 @@ public class ResourceReader {
             Main.logger.warning("Could not find bottom left!");
         }
 
-        if (tr == null || br == null || tl == null || bl == null)
-        {
+        if (tr == null || br == null || tl == null || bl == null) {
             Main.logger.warning("Could not find corners of the raffle window");
             throw new RaffleImageException("Could not find resource window\n\nMake sure the window is uncovered!");
         }
-        else
-        {
+        else {
             Main.logger.info("Found raffle window");
             imgout = new RaffleImage(img,img.getSubimage(tl.x, tl.y, X, Y));
         }
@@ -143,22 +143,19 @@ public class ResourceReader {
         Main.logger.info("Starting to read image");
         BufferedImage workingImg = img;
 
-        ArrayList<Integer> ints = new ArrayList(4);
+        ArrayList<Integer> ints = new ArrayList<Integer>(4);
 
         boolean nonefound = true;
 
         jloop:
-        for(int j = 0; j < 4; j++)
-        {
+        for(int j = 0; j < 4; j++) {
             Point leftmost = new Point(workingImg.getWidth()-2, 0);
             boolean notfound = true;
             int leftint=0;
-            for (int i = 0; i < 10; i++)
-            {
+            for (int i = 0; i < 10; i++) {
                 Point currpoint = ImageUtils.indexOfIgnoreWhite(workingImg, numImgs[i]);
 
-                if (currpoint != null && currpoint.x < leftmost.x)
-                {
+                if (currpoint != null && currpoint.x < leftmost.x) {
                     leftmost = currpoint;
                     leftint = i;
                     notfound = false;
@@ -166,13 +163,11 @@ public class ResourceReader {
                 }
             }
 
-            if (notfound)
-            {
+            if (notfound) {
                 break;
             }
 
-            else
-            {
+            else {
                 ints.add(leftint);
                 int w = numImgs[leftint].getWidth();
                 workingImg = workingImg.getSubimage(leftmost.x+w, 0, workingImg.getWidth()-w-leftmost.x, workingImg.getHeight());
@@ -186,8 +181,7 @@ public class ResourceReader {
 
         int returnInt;
 
-        switch(ints.size())
-        {
+        switch(ints.size()) {
             case 1:
                 returnInt = ints.get(0);
                 //System.out.println("one digit - "+returnInt);
@@ -212,8 +206,7 @@ public class ResourceReader {
         return returnInt;
     }
 
-    public static String readName(BufferedImage img) throws RaffleImageException
-    {
+    public static String readName(BufferedImage img) throws RaffleImageException {
         Main.logger.info("Attempting to read name...");
         Point left = ImageUtils.indexOfName(img, nameLeft);
         Point right = ImageUtils.indexOfName(img, nameRight);
@@ -229,26 +222,22 @@ public class ResourceReader {
             Main.logger.warning("Could not find left or right area of the name");
             throw new RaffleImageException("Cannot read name - make sure the image is uncovered");
         }
-        else
-        {
+        else {
             char[] name = new char[15];
             BufferedImage subimg = img.getSubimage(left.x+nameLeft.getWidth(),left.y, right.x-left.x-nameLeft.getWidth(), nameRight.getHeight());
             boolean nonefound = true;
             int i = 0;
 
-            while(subimg.getWidth() > 3)
-            {
+            while(subimg.getWidth() > 3) {
                 //System.out.println("loop j " + j);
                 Point leftmost = new Point(subimg.getWidth()-1, 0);
                 boolean notfound = true;
                 char leftChar = '0';
-                for (char ch : nameImgs.keySet())
-                {
+                for (char ch : nameImgs.keySet()) {
                     //System.out.println("loop i " + i);
                     Point currpoint = ImageUtils.indexOfName(subimg, nameImgs.get(ch));
 
-                    if (currpoint != null && currpoint.x < leftmost.x)
-                    {
+                    if (currpoint != null && currpoint.x < leftmost.x) {
                         //System.out.println("found one!");
                         leftmost = currpoint;
                         leftChar = ch;
@@ -258,8 +247,7 @@ public class ResourceReader {
                 }
 
 
-                if (!notfound)
-                {
+                if (!notfound) {
 
                     //System.out.println("found one, not breaking");
                     name[i] = leftChar;

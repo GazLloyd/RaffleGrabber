@@ -17,14 +17,11 @@ public class TimeTools {
      */
 
     private static final SimpleTimeZone utc = new SimpleTimeZone(0, "Etc/UTC");
-    private static Date citadel_start;
     private static final long ms_in_week = 1000*60*60*24*7;
     private static SimpleDateFormat sdf = new SimpleDateFormat("HH-mm d MMM Y");
     private static final String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 
     private static int curr_week;
-    private static Date start_cal;
-    private static Date end_cal;
     private static int start_day;
     private static String start_month;
     private static int end_day;
@@ -32,14 +29,14 @@ public class TimeTools {
 
     public static void initialise() {
         Main.logger.info("Initialising TimeTools");
-        citadel_start = new Date(1311685200L*1000L);    // 26 July 2011, 13:00 UTC, in milliseconds - see http://www.unixtimestamp.com/
+        Date citadel_start = new Date(1311685200L * 1000L);
         Date curr = new Date();
         sdf.setTimeZone(utc);
 
         curr_week = (int)((curr.getTime() - citadel_start.getTime())/ms_in_week);
 
-        start_cal = new Date(citadel_start.getTime() + curr_week*ms_in_week);
-        end_cal = new Date(citadel_start.getTime() + (curr_week+1)*ms_in_week);
+        Date start_cal = new Date(citadel_start.getTime() + curr_week * ms_in_week);
+        Date end_cal = new Date(citadel_start.getTime() + (curr_week + 1) * ms_in_week);
 
         start_day = start_cal.getDate();
         start_month = months[start_cal.getMonth()];

@@ -15,8 +15,7 @@ public class Entrant {
     private String name;
     private HashMap<ResourceType, Integer> resources;
 
-    public Entrant(RaffleImage img, String name, int timber, int stone, int ore, int pore, int coal, int bars, int pbars, int cloth, int rations, int minions)
-    {
+    public Entrant(RaffleImage img, String name, int timber, int stone, int ore, int pore, int coal, int bars, int pbars, int cloth, int rations, int minions) {
         Main.logger.info("Creating new entrant object from values...");
         this.img = img;
 
@@ -38,8 +37,7 @@ public class Entrant {
 
     }
 
-    public Entrant(RaffleImage img) throws RaffleImageException
-    {
+    public Entrant(RaffleImage img) throws RaffleImageException {
         Main.logger.info("Creating new entrant object from just image...");
         this.img = img;
 
@@ -62,80 +60,65 @@ public class Entrant {
         resources.put(ResourceType.MINIONS, readMinions());
     }
 
-    public String readName() throws RaffleImageException
-    {
+    public String readName() throws RaffleImageException {
         return ResourceReader.readName(img.croppedImg);
     }
 
-    public int readTimber() throws RaffleImageException
-    {
+    public int readTimber() throws RaffleImageException {
         return ResourceReader.readInt(img.croppedImg.getSubimage(95, 78, 46, 13));
     }
 
-    public int readStone() throws RaffleImageException
-    {
+    public int readStone() throws RaffleImageException {
         return ResourceReader.readInt(img.croppedImg.getSubimage(95, 103, 46, 13));
     }
 
-    public int readCoal() throws RaffleImageException
-    {
+    public int readCoal() throws RaffleImageException {
         return ResourceReader.readInt(img.croppedImg.getSubimage(95, 128, 46, 13));
     }
 
-    public int readOre() throws RaffleImageException
-    {
+    public int readOre() throws RaffleImageException {
         return ResourceReader.readInt(img.croppedImg.getSubimage(95, 153, 46, 13));
     }
 
-    public int readBars() throws RaffleImageException
-    {
+    public int readBars() throws RaffleImageException {
         return ResourceReader.readInt(img.croppedImg.getSubimage(95, 178, 46, 13));
     }
 
-    public int readPOre() throws RaffleImageException
-    {
+    public int readPOre() throws RaffleImageException {
         return ResourceReader.readInt(img.croppedImg.getSubimage(245, 78, 46, 13));
     }
 
-    public int readPBars() throws RaffleImageException
-    {
+    public int readPBars() throws RaffleImageException {
         return ResourceReader.readInt(img.croppedImg.getSubimage(245, 103, 46, 13));
     }
 
-    public int readCloth() throws RaffleImageException
-    {
+    public int readCloth() throws RaffleImageException {
         return ResourceReader.readInt(img.croppedImg.getSubimage(245, 128, 46, 13));
     }
 
-    public int readRations() throws RaffleImageException
-    {
+    public int readRations() throws RaffleImageException {
         return ResourceReader.readInt(img.croppedImg.getSubimage(245, 153, 46, 13));
     }
 
-    public int readMinions() throws RaffleImageException
-    {
+    public int readMinions() throws RaffleImageException {
         return ResourceReader.readInt(img.croppedImg.getSubimage(245, 178, 46, 13));
     }
 
 
-    public RaffleImage getImg()
-    {
+    public RaffleImage getImg() {
         return img;
     }
 
-    public HashMap<ResourceType, Integer> getResources()
-    {
+    public HashMap<ResourceType, Integer> getResources() {
         return resources;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
 
-    public String toString()
-    {
+    public String toString() {
         return name + " has gathered:\n" + resources.get(ResourceType.TIMBER) + " timber\n"
                 + resources.get(ResourceType.STONE) + " stone\n"
                 + resources.get(ResourceType.CHARCOAL) + " coal\n"
@@ -148,8 +131,7 @@ public class Entrant {
                 + "and " + resources.get(ResourceType.MINIONS) + " minions\n";
     }
 
-    public String printString()
-    {
+    public String printString() {
         return name+","+resources.get(ResourceType.TIMBER)+","+resources.get(ResourceType.STONE)
                 +","+resources.get(ResourceType.CHARCOAL)+","+resources.get(ResourceType.ORE)
                 +","+resources.get(ResourceType.BARS)+","+resources.get(ResourceType.PRECIOUS_ORE)
@@ -157,8 +139,7 @@ public class Entrant {
                 +","+resources.get(ResourceType.RATIONS)+","+resources.get(ResourceType.MINIONS);
     }
 
-    public void saveImg() throws IOException
-    {
+    public void saveImg() throws IOException {
         Main.logger.info("Saving image...");
 
         File folder = new File(Main.getPath(), File.separator+TimeTools.folderName());
@@ -172,8 +153,7 @@ public class Entrant {
         ImageIO.write(img.croppedImg, "png", new File(folder+File.separator+TimeTools.now()+ " - " + name + ".png"));
     }
 
-    public void amend(String name, HashMap<ResourceType, Integer> res)
-    {
+    public void amend(String name, HashMap<ResourceType, Integer> res) {
         Main.logger.info("Amending entrant...");
         this.name = name;
         this.resources = res;

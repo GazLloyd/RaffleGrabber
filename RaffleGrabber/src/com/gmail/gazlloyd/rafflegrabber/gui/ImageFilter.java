@@ -27,12 +27,11 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 package com.gmail.gazlloyd.rafflegrabber.gui;
 
 import java.io.File;
-import javax.swing.*;
 import javax.swing.filechooser.*;
 
 /* ImageFilter.java is used by FileChooserDemo2.java. */
@@ -45,20 +44,8 @@ public class ImageFilter extends FileFilter {
         }
 
         String extension = FileChooserUtils.getExtension(f);
-        if (extension != null) {
-            if (extension.equals(FileChooserUtils.tiff) ||
-                extension.equals(FileChooserUtils.tif) ||
-                extension.equals(FileChooserUtils.gif) ||
-                extension.equals(FileChooserUtils.jpeg) ||
-                extension.equals(FileChooserUtils.jpg) ||
-                extension.equals(FileChooserUtils.png)) {
-                    return true;
-            } else {
-                return false;
-            }
-        }
+        return extension != null && (extension.equals(FileChooserUtils.tiff) || extension.equals(FileChooserUtils.tif) || extension.equals(FileChooserUtils.gif) || extension.equals(FileChooserUtils.jpeg) || extension.equals(FileChooserUtils.jpg) || extension.equals(FileChooserUtils.png));
 
-        return false;
     }
 
     //The description of this filter

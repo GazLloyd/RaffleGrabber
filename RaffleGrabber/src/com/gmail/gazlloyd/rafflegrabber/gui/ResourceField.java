@@ -57,8 +57,7 @@ public class ResourceField extends JPanel {
 
 
 
-    private class ResourceTextField extends JTextField
-    {
+    private class ResourceTextField extends JTextField {
         final int X = 58;
         final int Y = 20;
         ResourceType type;
@@ -66,8 +65,7 @@ public class ResourceField extends JPanel {
         boolean okay = true;
         ResourceField container;
 
-        public ResourceTextField(ResourceType type, int valuein, ResourceField con)
-        {
+        public ResourceTextField(ResourceType type, int valuein, ResourceField con) {
 
             setMaximumSize(new Dimension(X, Y));
             setMinimumSize(new Dimension(X, Y));
@@ -86,18 +84,15 @@ public class ResourceField extends JPanel {
             addKeyListener(new KeyAdapter(){
                 public void keyReleased(KeyEvent e) {
                     int i;
-                    try
-                    {
+                    try {
                         i = Integer.parseInt(getText());
-                        if (i > 2700)
-                        {
+                        if (i > 2700) {
                             Main.logger.info("Detected that field is greater than 2700, setting to red");
                             setBackground(Color.RED);
                             okay = false;
                         }
 
-                        else
-                        {
+                        else {
 
                             Main.logger.info("Resource value is less than 2700, setting to white");
                             setBackground(Color.WHITE);
@@ -108,8 +103,7 @@ public class ResourceField extends JPanel {
 
                     }
 
-                    catch (NumberFormatException ex)
-                    {
+                    catch (NumberFormatException ex) {
                         Main.logger.warning("The value inserted was an invalid number, setting to red");
                         setBackground(Color.RED);
                         okay = false;

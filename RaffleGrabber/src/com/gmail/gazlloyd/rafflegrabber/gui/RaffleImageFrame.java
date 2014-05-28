@@ -14,18 +14,14 @@ import com.gmail.gazlloyd.rafflegrabber.*;
 
 public class RaffleImageFrame extends JFrame {
 
-	private JPanel contentPane;
-	private BufferedImage img;
-	protected Entrant entrant;
-	protected HashMap<ResourceType, ResourceField> fields;
-	protected JTextField nameField;
-	private final Action cancelAction = new CancelAction();
-	private final Action amendAction = new AmendAction();
-	private final Action submitAction = new SubmitAction();
-	protected boolean amended = false;
+    private BufferedImage img;
+    protected Entrant entrant;
+    protected HashMap<ResourceType, ResourceField> fields;
+    protected JTextField nameField;
+    protected boolean amended = false;
 
 
-	public RaffleImageFrame(Entrant entrant) {
+    public RaffleImageFrame(Entrant entrant) {
         /*
         Panel is subdivided many times
         first division is to two, one on the right with the image (imagePanel) and one on the left with
@@ -43,17 +39,17 @@ public class RaffleImageFrame extends JFrame {
          */
 
         Main.logger.info("Creating raffle image frame");
-		setTitle("Entrant verification");
+        setTitle("Entrant verification");
         setResizable(false);
-		this.entrant = entrant;
-		this.img = entrant.getImg().croppedImg;
+        this.entrant = entrant;
+        this.img = entrant.getImg().croppedImg;
 
         //setup content pane
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new FlowLayout());
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JPanel contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(new FlowLayout());
         contentPane.setAlignmentY(TOP_ALIGNMENT);
 
         JPanel resourcePanel = new JPanel();
@@ -83,42 +79,44 @@ public class RaffleImageFrame extends JFrame {
 
         String name = entrant.getName();
         JLabel lblPlayerName = new JLabel("Player Name:");
-		namePanel.add(lblPlayerName);
+        namePanel.add(lblPlayerName);
 
-		nameField = new JTextField();
+        nameField = new JTextField();
         namePanel.add(Box.createRigidArea(new Dimension(10,0)));
-		namePanel.add(nameField);
-		nameField.setColumns(15);
-		nameField.setText(name);
-		nameField.setEditable(name.equals(""));
+        namePanel.add(nameField);
+        nameField.setColumns(15);
+        nameField.setText(name);
+        nameField.setEditable(name.equals(""));
         namePanel.add(Box.createRigidArea(new Dimension(10,0)));
 
-		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setAction(submitAction);
-		btnSubmit.setToolTipText("Saves the image and submits the data to a text file");
-		buttonPanel.add(btnSubmit);
+        JButton btnSubmit = new JButton("Submit");
+        Action submitAction = new SubmitAction();
+        btnSubmit.setAction(submitAction);
+        btnSubmit.setToolTipText("Saves the image and submits the data to a text file");
+        buttonPanel.add(btnSubmit);
 
         buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 
         JButton btnAmend = new JButton("Amend");
-		btnAmend.setAction(amendAction);
-		btnAmend.setToolTipText("Unlocks the fields and allows editing to fix the values");
-		buttonPanel.add(btnAmend);
+        Action amendAction = new AmendAction();
+        btnAmend.setAction(amendAction);
+        btnAmend.setToolTipText("Unlocks the fields and allows editing to fix the values");
+        buttonPanel.add(btnAmend);
 
         buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 
-		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setAction(cancelAction);
-		btnCancel.setToolTipText("Disregards this user and closes the dialog");
-		buttonPanel.add(btnCancel);
+        JButton btnCancel = new JButton("Cancel");
+        Action cancelAction = new CancelAction();
+        btnCancel.setAction(cancelAction);
+        btnCancel.setToolTipText("Disregards this user and closes the dialog");
+        buttonPanel.add(btnCancel);
 
-		fields = new HashMap<ResourceType, ResourceField>();
-		for (ResourceType r : ResourceType.values())
-		{
+        fields = new HashMap<ResourceType, ResourceField>();
+        for (ResourceType r : ResourceType.values()) {
             ResourceField f = new ResourceField(r, entrant.getResources().get(r));
-			fields.put(r, f);
+            fields.put(r, f);
 
-		}
+        }
 
         valuesPanelLeft.add(fields.get(ResourceType.TIMBER));
         valuesPanelLeft.add(fields.get(ResourceType.STONE));
@@ -158,112 +156,101 @@ public class RaffleImageFrame extends JFrame {
 
         Main.logger.info("Created raffle image frame");
 
-	}
+    }
 
-	private class ImagePanel extends JPanel
-	{
+    private class ImagePanel extends JPanel {
 
-		public void paintComponent(Graphics g)
-		{
+        public void paintComponent(Graphics g) {
             Main.logger.info("Drawing image");
-			g.drawImage(img, 0, 0, ResourceReader.X, ResourceReader.Y, null);
-		}
-	}
+            g.drawImage(img, 0, 0, ResourceReader.X, ResourceReader.Y, null);
+        }
+    }
 
 
-	public void go()
-	{
+    public void go() {
         Main.logger.info("Setting raffle image frame visible");
-		setVisible(true);
-	}
-	private class CancelAction extends AbstractAction {
-		public CancelAction() {
-			putValue(NAME, "Cancel");
-			putValue(SHORT_DESCRIPTION, "Disregards this user and closes the dialog");
-		}
-		public void actionPerformed(ActionEvent e) {
+        setVisible(true);
+    }
+    private class CancelAction extends AbstractAction {
+        public CancelAction() {
+            putValue(NAME, "Cancel");
+            putValue(SHORT_DESCRIPTION, "Disregards this user and closes the dialog");
+        }
+        public void actionPerformed(ActionEvent e) {
             Main.logger.info("Cancel button clicked, closing window");
-			RaffleImageFrame.this.dispose();
-		}
-	}
-	private class AmendAction extends AbstractAction {
-		public AmendAction() {
-			putValue(NAME, "Amend");
-			putValue(SHORT_DESCRIPTION, "Unlocks the fields and allows editing to fix the values");
-		}
-		public void actionPerformed(ActionEvent e) {
+            RaffleImageFrame.this.dispose();
+        }
+    }
+    private class AmendAction extends AbstractAction {
+        public AmendAction() {
+            putValue(NAME, "Amend");
+            putValue(SHORT_DESCRIPTION, "Unlocks the fields and allows editing to fix the values");
+        }
+        public void actionPerformed(ActionEvent e) {
             Main.logger.info("Amend button clicked, unlocking fields");
 
-			RaffleImageFrame.this.amended = true;
-			for (ResourceField r : RaffleImageFrame.this.fields.values())
-			{
-				r.setEditable(true);
-			}
+            RaffleImageFrame.this.amended = true;
+            for (ResourceField r : RaffleImageFrame.this.fields.values()) {
+                r.setEditable(true);
+            }
 
-			RaffleImageFrame.this.nameField.setEditable(true);
-		}
-	}
-	private class SubmitAction extends AbstractAction {
-		public SubmitAction() {
-			putValue(NAME, "Submit");
-			putValue(SHORT_DESCRIPTION, "Submits the data in the form");
-		}
-		public void actionPerformed(ActionEvent e) {
+            RaffleImageFrame.this.nameField.setEditable(true);
+        }
+    }
+    private class SubmitAction extends AbstractAction {
+        public SubmitAction() {
+            putValue(NAME, "Submit");
+            putValue(SHORT_DESCRIPTION, "Submits the data in the form");
+        }
+        public void actionPerformed(ActionEvent e) {
             Main.logger.info("Submit button clicked");
 
-			if (RaffleImageFrame.this.amended)
-			{
+            if (RaffleImageFrame.this.amended) {
                 Main.logger.info("Frame was amended, double checking total");
-				HashMap<ResourceType, Integer> readFields = new HashMap<ResourceType, Integer>();
-				int total = 0;
-				for (ResourceType rt : ResourceType.values())
-				{
-					ResourceField rf = RaffleImageFrame.this.fields.get(rt);
-					if (rf.isOkay())
-					{
-						readFields.put(rt, rf.getValue());
-						total += rf.getValue();
-					}
-					else
-					{
+                HashMap<ResourceType, Integer> readFields = new HashMap<ResourceType, Integer>();
+                int total = 0;
+                for (ResourceType rt : ResourceType.values()) {
+                    ResourceField rf = RaffleImageFrame.this.fields.get(rt);
+                    if (rf.isOkay()) {
+                        readFields.put(rt, rf.getValue());
+                        total += rf.getValue();
+                    }
+                    else {
                         Main.logger.warning("One of the fields contained an invalid value, stopping submit");
-						new RaffleErrorPopup("One of more of the fields contains an invalid value");
-						return;
-					}
-				}
+                        new RaffleErrorPopup("One of more of the fields contains an invalid value");
+                        return;
+                    }
+                }
 
-				if (total > 2701)
-				{
+                if (total > 2701) {
                     Main.logger.warning("The total resources is too large");
-					new RaffleErrorPopup("The total resources is too large");
-					return;
-				}
+                    new RaffleErrorPopup("The total resources is too large");
+                    return;
+                }
 
                 Main.logger.info("Values are fine, copying back to entrant object");
-				RaffleImageFrame.this.entrant.amend(RaffleImageFrame.this.nameField.getText(), readFields);
-			}
+                RaffleImageFrame.this.entrant.amend(RaffleImageFrame.this.nameField.getText(), readFields);
+            }
 
-			try
-			{
+            try {
                 Main.logger.info("Attempting to write to log...");
-				BufferedWriter logWriter = new BufferedWriter(new FileWriter(Main.getLog(), true));
-				logWriter.newLine();
-				logWriter.write(TimeTools.nowL()+","+RaffleImageFrame.this.entrant.printString());
-				logWriter.close();
+                BufferedWriter logWriter = new BufferedWriter(new FileWriter(Main.getLog(), true));
+                logWriter.newLine();
+                logWriter.write(TimeTools.nowL()+","+RaffleImageFrame.this.entrant.printString());
+                logWriter.close();
 
                 Main.logger.info("Attempting to save image...");
-				RaffleImageFrame.this.entrant.saveImg();
-				new SuccessPopup(RaffleImageFrame.this);
-				RaffleImageFrame.this.setEnabled(false);
+                RaffleImageFrame.this.entrant.saveImg();
+                new SuccessPopup(RaffleImageFrame.this);
+                RaffleImageFrame.this.setEnabled(false);
 
-			}
+            }
 
-			catch (Exception ex)
-			{
+            catch (Exception ex) {
                 Main.logger.severe("There was an error submitting the data");
-				new RaffleErrorPopup("There was an error submitting the data");
-				ex.printStackTrace();
-			}
-		}
-	}
+                new RaffleErrorPopup("There was an error submitting the data");
+                ex.printStackTrace();
+            }
+        }
+    }
 }

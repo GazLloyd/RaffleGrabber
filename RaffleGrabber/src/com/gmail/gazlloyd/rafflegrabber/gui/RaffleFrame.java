@@ -15,12 +15,8 @@ import com.gmail.gazlloyd.rafflegrabber.*;
 
 public class RaffleFrame extends JFrame {
 
-    private JPanel contentPane;
-    private final Action loadAction = new LoadAction();
-    private final Action exitAction = new ExitAction();
     private JFileChooser fc;
     private ImageHandler ih;
-    private final Action captureAction = new CaptureAction();
 
 
     /**
@@ -33,11 +29,11 @@ public class RaffleFrame extends JFrame {
         setTitle("Raffle Image Grabber");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(100, 100, 275, 251);
-        contentPane = new JPanel();
+        JPanel contentPane = new JPanel();
         contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setOpaque(false);
-        contentPane.setLayout(new BoxLayout(contentPane,BoxLayout.Y_AXIS));
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 
         JTextPane txtpnWelcomeToThe = new JTextPane();
         txtpnWelcomeToThe.setEditable(false);
@@ -52,6 +48,7 @@ public class RaffleFrame extends JFrame {
         contentPane.add(buttons);
 
         JButton loadButton = new JButton("Load");
+        Action loadAction = new LoadAction();
         loadButton.setAction(loadAction);
         //loadButton.setBounds(65, 111, 113, 23);
         loadButton.setAlignmentX(CENTER_ALIGNMENT);
@@ -60,6 +57,7 @@ public class RaffleFrame extends JFrame {
         buttons.add(Box.createRigidArea(new Dimension(10,0)));
 
         JButton captureButton = new JButton("Capture");
+        Action captureAction = new CaptureAction();
         captureButton.setAction(captureAction);
         //captureButton.setBounds(51, 145, 141, 23);
         captureButton.setAlignmentX(CENTER_ALIGNMENT);
@@ -68,6 +66,7 @@ public class RaffleFrame extends JFrame {
         buttons.add(Box.createRigidArea(new Dimension(10,0)));
 
         JButton exitButton = new JButton("Exit");
+        Action exitAction = new ExitAction();
         exitButton.setAction(exitAction);
         //exitButton.setBounds(75, 179, 89, 23);
         exitButton.setAlignmentX(CENTER_ALIGNMENT);
@@ -97,21 +96,18 @@ public class RaffleFrame extends JFrame {
             int returnVal = fc.showOpenDialog(RaffleFrame.this);
             Main.logger.info("Return value obtained: " + returnVal);
 
-            if(JFileChooser.APPROVE_OPTION == returnVal)
-            {
+            if(JFileChooser.APPROVE_OPTION == returnVal) {
                 File file = fc.getSelectedFile();
                 Main.logger.info("File chosen: " + file.getPath());
                 BufferedImage img = ih.loadImage(file);
-                try
-                {
+                try {
                     RaffleImage rafimg = ResourceReader.getRaffleImg(img);
                     Entrant entrant = new Entrant(rafimg);
                     Main.logger.info("Entrant found, values: " + entrant);
                     RaffleImageFrame rif = new RaffleImageFrame(entrant);
                     rif.go();
                 }
-                catch (RaffleImageException rie)
-                {
+                catch (RaffleImageException rie) {
                     Main.logger.severe("There was an error loading the entrant: " + rie.msg);
                     new RaffleErrorPopup(rie.msg);
                 }
@@ -137,7 +133,7 @@ public class RaffleFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             Main.logger.info("Capture pressed");
             BufferedImage img = null;
-            RaffleImage rafimg = null;
+            RaffleImage rafimg;
 
             try {
                 Main.logger.info("Attempting screen capture...");
@@ -206,9 +202,9 @@ public class RaffleFrame extends JFrame {
             //if not mac, use java.awt.Robot
             if(!useScreencapture) {
                 Main.logger.info("Attempting screen capture with java.awt.Robot");
-                for (int i=0; i < deviceNum; i++) {
-                    Robot r = new Robot(devices[i]);
-                    images.add(r.createScreenCapture(new Rectangle(new Point(0,0), Toolkit.getDefaultToolkit().getScreenSize())));
+                for (GraphicsDevice device : devices) {
+                    Robot r = new Robot(device);
+                    images.add(r.createScreenCapture(new Rectangle(new Point(0, 0), Toolkit.getDefaultToolkit().getScreenSize())));
                 }
             }
             //if mac, use default screencapture
@@ -224,7 +220,7 @@ public class RaffleFrame extends JFrame {
                     args.add("/usr/sbin/screencapture");
                     args.add("-x");
 
-                    for(int i = 0; i < deviceNum; i++) {
+                    for (GraphicsDevice device : devices) {
                         File f = File.createTempFile("rafflegrabber-", ".png");
                         files.add(f);
                         String path = f.getPath();
@@ -241,7 +237,8 @@ public class RaffleFrame extends JFrame {
                             f.delete();
                         }
                         catch (Exception e3) {
-
+                            Main.logger.warning("There was a problem reading images");
+                            e3.printStackTrace();
                         }
                     }
                 }
@@ -265,8 +262,11 @@ public class RaffleFrame extends JFrame {
                 try {
                     img.createGraphics().drawImage(images.get(i), currentWidth, 0, null);
                     currentWidth += images.get(i).getWidth();
-                } catch (Exception e3) {
+                }
 
+                catch (Exception e3) {
+                    Main.logger.warning("Error creating new image");
+                    e3.printStackTrace();
                 }
             }
 

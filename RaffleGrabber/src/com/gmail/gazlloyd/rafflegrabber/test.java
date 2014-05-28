@@ -18,8 +18,7 @@ public class test {
     static int white;
 
     static void init() {
-        try
-        {
+        try {
             System.out.println("Loading images...");
             cornertr = ImageIO.read(test.class.getClassLoader().getResourceAsStream("templates/cornertr.png"));
             cornerbr = ImageIO.read(test.class.getClassLoader().getResourceAsStream("templates/cornerbr.png"));
@@ -33,8 +32,7 @@ public class test {
             System.out.println("Images loaded");
         }
 
-        catch (IOException e)
-        {
+        catch (IOException e) {
             System.out.println("IOException\n");
             e.printStackTrace();
             System.exit(1);
@@ -99,8 +97,7 @@ public class test {
 
 
     }
-    public static int fuzzyColorMatch(int color1, int color2, int threshold)
-    {
+    public static int fuzzyColorMatch(int color1, int color2, int threshold) {
         if (color1 == color2) {
             //System.out.println("\t difference: none");
             return 0;

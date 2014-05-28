@@ -27,7 +27,7 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 package com.gmail.gazlloyd.rafflegrabber.gui;
 
@@ -38,7 +38,7 @@ import java.io.File;
 
 /* ImagePreview.java by FileChooserDemo2.java. */
 public class ImagePreview extends JComponent
-                          implements PropertyChangeListener {
+        implements PropertyChangeListener {
     ImageIcon thumbnail = null;
     File file = null;
 
@@ -60,9 +60,11 @@ public class ImagePreview extends JComponent
         if (tmpIcon != null) {
             if (tmpIcon.getIconWidth() > 240) {
                 thumbnail = new ImageIcon(tmpIcon.getImage().
-                                          getScaledInstance(240, -1,
-                                                      Image.SCALE_DEFAULT));
-            } else { //no need to miniaturize
+                        getScaledInstance(240, -1,
+                                Image.SCALE_DEFAULT));
+            }
+
+            else { //no need to miniaturize
                 thumbnail = tmpIcon;
             }
         }
@@ -77,7 +79,7 @@ public class ImagePreview extends JComponent
             file = null;
             update = true;
 
-        //If a file became selected, find out which one.
+            //If a file became selected, find out which one.
         } else if (JFileChooser.SELECTED_FILE_CHANGED_PROPERTY.equals(prop)) {
             file = (File) e.getNewValue();
             update = true;
