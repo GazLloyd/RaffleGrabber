@@ -2,13 +2,12 @@ package com.gmail.gazlloyd.rafflegrabber;
 
 import com.gmail.gazlloyd.rafflegrabber.gui.Main;
 
-import java.awt.Point;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.imageio.ImageIO;
 
 public class ResourceReader {
 
@@ -17,7 +16,8 @@ public class ResourceReader {
     public static char[] characters = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
     public static char[] otherChars = {'0','1','2','3','4','5','6','7','8','9','-','_'};
     public static BufferedImage nameLeft, nameRight;
-    public static BufferedImage cornertr, cornertl, cornerbr, cornerbl;
+    public static HashMap<String, BufferedImage> corners;
+    public static String[] cornerlabels = {"tr", "br", "tl", "bl"};
 
     public static final int CORNERTHRESHOLD = 50;
     public static final int X = 352, Y = 252;
@@ -25,16 +25,15 @@ public class ResourceReader {
     public static void initialise() {
 
         Main.logger.info("Loading resource reader...");
-        nameImgs = new HashMap();
+        nameImgs = new HashMap<Character, BufferedImage>();
+        corners = new HashMap<String, BufferedImage>();
 
         try {
             Main.logger.info("Initialising raffle image");
 
             Main.logger.info("Loading corner images");
-            cornertr = ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/cornertr.png"));
-            cornerbr = ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/cornerbr.png"));
-            cornertl = ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/cornertl.png"));
-            cornerbl = ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/cornerbl.png"));
+            for (String st : cornerlabels)
+                corners.put(st, ImageIO.read(ResourceReader.class.getClassLoader().getResourceAsStream("templates/corner"+st+".png")));
 
             Main.logger.info("Loading number images");
             for (int i = 0; i < 10; i++)
@@ -83,10 +82,32 @@ public class ResourceReader {
         RaffleImage imgout = null;
 
         Main.logger.info("Attempting to find raffle window...");
-        Point tr = ImageUtils.findCornerIndex(img, cornertr, CORNERTHRESHOLD);
-        Point br = ImageUtils.findCornerIndex(img, cornerbr, CORNERTHRESHOLD);
-        Point tl = ImageUtils.findCornerIndex(img, cornertl, CORNERTHRESHOLD);
-        Point bl = ImageUtils.findCornerIndex(img, cornerbl, CORNERTHRESHOLD);
+
+        Point tl = null;
+
+        for (String st : cornerlabels) {
+            Point corn = ImageUtils.findCornerIndex(img, corners.get(st), CORNERTHRESHOLD);
+            if (corn == null) {
+                Main.logger.warning("Could not find corner "+st);
+                throw new RaffleImageException("Could not find resource window\n\nMake sure the window is uncovered!");
+            }
+
+            if (st.equalsIgnoreCase("tl"))
+                tl = corn;
+        }
+
+        Main.logger.info("Found raffle window");
+        imgout = new RaffleImage(img,img.getSubimage(tl.x, tl.y, X, Y));
+
+
+        /*
+        //kept here for debugging purposes
+
+
+        Point tr = ImageUtils.findCornerIndex(img, corners.get("tr"), CORNERTHRESHOLD);
+        Point br = ImageUtils.findCornerIndex(img, corners.get("br"), CORNERTHRESHOLD);
+        Point tl = ImageUtils.findCornerIndex(img, corners.get("tl"), CORNERTHRESHOLD);
+        Point bl = ImageUtils.findCornerIndex(img, corners.get("bl"), CORNERTHRESHOLD);
 
 
         if (tr == null) {
@@ -112,6 +133,7 @@ public class ResourceReader {
             Main.logger.info("Found raffle window");
             imgout = new RaffleImage(img,img.getSubimage(tl.x, tl.y, X, Y));
         }
+        */
 
         return imgout;
     }
