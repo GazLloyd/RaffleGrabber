@@ -86,7 +86,13 @@ public class RaffleImageFrame extends JFrame {
         namePanel.add(nameField);
         nameField.setColumns(15);
         nameField.setText(name);
-        nameField.setEditable(name.equals(""));
+        if (name.equals("")) {
+            nameField.setEditable(true);
+            this.amended = true;
+        }
+        else {
+            nameField.setEditable(false);
+        }
         namePanel.add(Box.createRigidArea(new Dimension(10,0)));
 
         JButton btnSubmit = new JButton("Submit");
